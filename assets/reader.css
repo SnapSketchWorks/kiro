@@ -51,9 +51,9 @@ html[data-theme="light"] {
   --shadow: 0 8px 30px rgba(31, 28, 22, .12);
   --glass: rgba(247, 245, 241, .86);
   /* 도판 팔레트 */
-  --ph-film: #ded9d0; --ph-hole: #f6f3ed;
-  --ph-sky: #e9e6df; --ph-mid: #cbc7be; --ph-dk: #4d4a44;
-  --ph-hi: #fffefa; --ph-line: #a8a39a; --ph-warm: #a8563d;
+  --ph-film: #d5d0c6; --ph-hole: #f8f6f1;
+  --ph-sky: #efece5; --ph-mid: #c5c0b5; --ph-dk: #2e2c28;
+  --ph-hi: #ffffff; --ph-line: #918a7f; --ph-warm: #b1522f; --ph-ink: #2e2c28;
 }
 html[data-theme="sepia"] {
   --bg: #f2e7d3;
@@ -68,9 +68,9 @@ html[data-theme="sepia"] {
   --accent-soft: rgba(154, 91, 30, .12);
   --shadow: 0 8px 30px rgba(80, 60, 25, .16);
   --glass: rgba(242, 231, 211, .88);
-  --ph-film: #d7c5a2; --ph-hole: #f4ebd8;
-  --ph-sky: #eaddc1; --ph-mid: #d2c2a1; --ph-dk: #574630;
-  --ph-hi: #fdf7e8; --ph-line: #af9b73; --ph-warm: #a55c2c;
+  --ph-film: #d2bf99; --ph-hole: #f6eeda;
+  --ph-sky: #f0e4c9; --ph-mid: #cdba95; --ph-dk: #382c1c;
+  --ph-hi: #fffaf0; --ph-line: #9e8860; --ph-warm: #a8552a; --ph-ink: #382c1c;
 }
 html[data-theme="dark"] {
   --bg: #14161a;
@@ -85,12 +85,16 @@ html[data-theme="dark"] {
   --accent-soft: rgba(211, 160, 106, .13);
   --shadow: 0 10px 34px rgba(0, 0, 0, .5);
   --glass: rgba(20, 22, 26, .84);
-  --ph-film: #0a0c0f; --ph-hole: #191d23;
-  --ph-sky: #272d35; --ph-mid: #1a1f26; --ph-dk: #0b0d10;
-  --ph-hi: #c8ced5; --ph-line: #3e454f; --ph-warm: #8c4a3a;
+  --ph-film: #08090b; --ph-hole: #17191e;
+  --ph-sky: #3b434e; --ph-mid: #232a33; --ph-dk: #090a0d;
+  --ph-hi: #e3e7ec; --ph-line: #5a646f; --ph-warm: #b25a42; --ph-ink: #e3e7ec;
 }
 
 * { box-sizing: border-box; }
+
+/* hidden 속성이 author 규칙(예: .cover{display:grid})에 덮이지 않게 한다.
+   이게 없으면 표지가 모든 화 위에 남는다. */
+[hidden] { display: none !important; }
 
 html, body { margin: 0; padding: 0; }
 
@@ -107,7 +111,8 @@ body {
 
 body.is-locked { overflow: hidden; }
 
-svg {
+/* UI 아이콘 전용. 전역 svg 규칙으로 두면 도판 SVG가 stroke/fill 을 상속받아 망가진다. */
+.iconbtn svg, .pager__btn svg {
   width: 22px; height: 22px;
   fill: none; stroke: currentColor;
   stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
@@ -473,7 +478,8 @@ html[data-theme="dark"] .btn--primary:hover { color: #17191d; }
 }
 html[data-theme="light"] .plate__frame,
 html[data-theme="sepia"] .plate__frame { box-shadow: 0 4px 16px rgba(60, 50, 30, .18); }
-.plate__frame svg { display: block; width: 100%; height: auto; }
+/* 도판은 각 도형이 fill/stroke 를 스스로 지정한다. 상속 차단. */
+.plate__frame svg { display: block; width: 100%; height: auto; stroke: none; }
 .plate__cap {
   margin: 12px 2px 0;
   font-family: var(--sans);

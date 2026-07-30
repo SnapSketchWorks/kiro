@@ -82,9 +82,26 @@
 ## 개발
 
 ```bash
-node build.js         # dist/ 에 단일 파일 생성 + 분량 통계 출력
-node test/harness.js  # 리더 동작 검증 (39개 항목)
+node build.js              # dist/ 에 단일 파일 생성 + 분량 통계 출력
+node test/harness.js       # 로직 검증 — 최소 DOM 스텁 (47개 항목)
+node test/render-check.js  # 렌더 검증 — 헤드리스 브라우저로 실제 계산된 스타일 확인 (9개 항목)
 ```
+
+검증이 두 단계인 이유가 있습니다. 스텁 하네스는 `element.hidden = true` 를 확인하지만, CSS 에 `.cover { display: grid }` 가 있으면 화면에서는 숨겨지지 않습니다. 이런 부류의 문제는 실제 렌더 결과를 봐야 잡힙니다. `render-check` 는 계산된 스타일을 직접 읽어 다음을 확인합니다.
+
+- `hidden` 속성이 실제로 요소를 숨기는지
+- 도판 SVG 가 UI 아이콘용 `stroke`/`fill` 을 상속받지 않는지
+- 도판이 본문 폭까지 커지는지
+- 테마별 도판 팔레트가 해석되는지
+
+도판을 눈으로 확인할 때는 컨택트시트를 씁니다.
+
+```bash
+node test/contact-sheet.js dark                    # 25장을 한 판에
+node test/contact-sheet.js light out.html only:4,11 # 특정 화만 크게
+```
+
+생성된 HTML 을 브라우저로 열거나 헤드리스로 캡처해 확인합니다. 브라우저가 없는 환경에서는 `render-check` 가 자동으로 건너뜁니다.
 
 빌드는 `index.html`의 `<link>` / `<script src>` 를 인라인으로 치환하는 방식이며, 외부 의존성이나 패키지 매니저가 필요하지 않습니다.
 

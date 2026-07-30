@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark" data-photo="on">
+<head>
+<meta charset="utf-8">
+<title>도판 검수 — 미현상</title>
+<link rel="stylesheet" href="../assets/reader.css">
+<style>
+  body { margin: 0; padding: 20px; }
+  .csheet { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px 16px; }
+  .cell { margin: 0; }
+  .cell__no {
+    font-family: var(--sans); font-size: 10px; font-weight: 700;
+    letter-spacing: .14em; color: var(--accent); margin-bottom: 5px;
+  }
+  .plate { margin: 0; }
+  .plate__cap { font-size: 9.5px; margin-top: 6px; }
+  h1 {
+    font-family: var(--sans); font-size: 13px; font-weight: 700;
+    letter-spacing: .1em; color: var(--fg-dim);
+    margin: 0 0 16px; text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+  <h1 id="head">도판 검수</h1>
+  <div class="csheet" id="csheet"></div>
+
+  <svg class="ph-defs" aria-hidden="true" focusable="false"><defs>
+    <filter id="ph-grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.34" intercept="0"/></feComponentTransfer>
+    </filter>
+    <radialGradient id="ph-vig" cx="50%" cy="48%" r="72%">
+      <stop offset="55%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.28"/>
+    </radialGradient>
+  </defs></svg>
+
+<script src="../content/photos.js"></script>
+<script>
+  (function () {
+    var q = new URLSearchParams(location.search);
+    var theme = q.get('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', theme);
+    document.getElementById('head').textContent = '도판 검수 — ' + theme;
+
+    var only = q.get('only');
+    var html = '';
+    var list = only ? only.split(',').map(Number) : Object.keys(window.PHOTOS).map(Number);
+    list.sort(function (a, b) { return a - b; });
+    list.forEach(function (no) {
+      var p = window.PHOTOS[no];
+      if (!p) return;
+      html += '<figure class="cell">' +
+        '<div class="cell__no">' + no + '</div>' +
+        '<figure class="plate"><div class="plate__frame">' + p.svg + '</div>' +
+        '<figcaption class="plate__cap">' + p.caption + '</figcaption></figure>' +
+        '</figure>';
+    });
+    document.getElementById('csheet').innerHTML = html;
+    if (only && list.length <= 2) {
+      document.getElementById('csheet').style.gridTemplateColumns = 'repeat(' + list.length + ', 1fr)';
+    }
+  })();
+</script>
+</body>
+</html>

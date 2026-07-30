@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark" data-photo="on">
+<head><meta charset="utf-8">
+<title>render check</title>
+<link rel="stylesheet" href="../assets/reader.css">
+<style>body{margin:0;padding:12px}#w{width:600px}</style>
+</head>
+<body>
+<!-- 실제 리더와 같은 구조. CSS 가 hidden 을 존중하는지, 도판이 stroke 를 상속받지 않는지 검사 -->
+<section class="cover" id="cover" hidden><div class="cover__inner">cover</div></section>
+<div id="w"><article class="reader" id="reader"></article></div>
+<pre id="out" style="color:#5f5;background:#000;font-size:12px;padding:8px"></pre>
+
+<svg class="ph-defs" aria-hidden="true" focusable="false"><defs>
+  <filter id="ph-grain" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+    <feComponentTransfer><feFuncA type="linear" slope="0.34" intercept="0"/></feComponentTransfer>
+  </filter>
+  <radialGradient id="ph-vig" cx="50%" cy="48%" r="72%">
+    <stop offset="55%" stop-color="#000" stop-opacity="0"/>
+    <stop offset="100%" stop-color="#000" stop-opacity="0.28"/>
+  </radialGradient>
+</defs></svg>
+
+<script src="../content/photos.js"></script>
+<script>
+(function () {
+  var log = [], pass = 0, fail = 0;
+  function ck(name, cond, extra) {
+    if (cond) { pass++; log.push('  OK   ' + name); }
+    else { fail++; log.push('  FAIL ' + name + (extra ? '  -> ' + extra : '')); }
+  }
+
+  document.getElementById('reader').innerHTML =
+    '<figure class="plate"><div class="plate__frame">' + window.PHOTOS[4].svg + '</div>' +
+    '<figcaption class="plate__cap">cap</figcaption></figure>';
+
+  /* 1. hidden 속성이 실제로 숨기는가 (.cover{display:grid} 에 덮이면 표지가 모든 화에 남는다) */
+  ck('hidden 속성이 표지를 실제로 숨긴다',
+    getComputedStyle(document.getElementById('cover')).display === 'none',
+    getComputedStyle(document.getElementById('cover')).display);
+
+  /* 2. 도판이 UI 아이콘용 stroke/fill 을 상속받지 않는가 */
+  var svg = document.querySelector('.plate__frame svg');
+  var rect = svg && svg.querySelector('rect');
+  ck('도판 svg 에 stroke 상속 없음', svg && getComputedStyle(svg).stroke === 'none',
+    svg ? getComputedStyle(svg).stroke : 'svg 없음');
+  ck('도판 도형에 stroke 상속 없음', rect && getComputedStyle(rect).stroke === 'none',
+    rect ? getComputedStyle(rect).stroke : 'rect 없음');
+  ck('도판 도형 fill 이 유효함',
+    rect && getComputedStyle(rect).fill !== 'none' && getComputedStyle(rect).fill !== 'rgb(0, 0, 0)',
+    rect ? getComputedStyle(rect).fill : '-');
+
+  /* 3. 도판이 본문 폭에 맞게 커지는가 (전역 svg{width:22px} 에 눌리면 실패) */
+  var w = svg ? Math.round(svg.getBoundingClientRect().width) : 0;
+  ck('도판 폭이 본문 폭을 채움 (>400px)', w > 400, w + 'px');
+
+  /* 4. 테마별 팔레트가 해석되는가 */
+  ['light', 'sepia', 'dark'].forEach(function (t) {
+    document.documentElement.setAttribute('data-theme', t);
+    var v = getComputedStyle(document.documentElement).getPropertyValue('--ph-film').trim();
+    ck('팔레트 해석: ' + t, /^#[0-9a-f]{6}$/i.test(v), v || '없음');
+  });
+  document.documentElement.setAttribute('data-theme', 'dark');
+
+  /* 5. 사진 숨기기 설정이 실제로 숨기는가 */
+  document.documentElement.setAttribute('data-photo', 'off');
+  ck('사진 숨기기가 실제로 적용됨',
+    getComputedStyle(document.querySelector('.plate')).display === 'none');
+  document.documentElement.setAttribute('data-photo', 'on');
+
+  log.unshift('RESULT ' + pass + ' 통과 / ' + fail + ' 실패');
+  document.getElementById('out').textContent = log.join('\n');
+})();
+</script>
+</body></html>
