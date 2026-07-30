@@ -41,7 +41,11 @@
   };
 
   /* ---------------- 설정 ---------------- */
-  var DEFAULTS = { theme: 'auto', font: 'serif', size: '3', leading: 'normal', width: 'normal' };
+  var PHOTOS = window.PHOTOS || {};
+  var DEFAULTS = {
+    theme: 'auto', font: 'serif', size: '3',
+    leading: 'normal', width: 'normal', photo: 'on'
+  };
   var settings = load(LS_SET, {});
   for (var k in DEFAULTS) { if (!(k in settings)) settings[k] = DEFAULTS[k]; }
 
@@ -62,11 +66,15 @@
     el.root.setAttribute('data-size', settings.size);
     el.root.setAttribute('data-leading', settings.leading);
     el.root.setAttribute('data-width', settings.width);
+    el.root.setAttribute('data-photo', settings.photo);
     syncSegs();
     save(LS_SET, settings);
   }
 
-  var SEGS = { setTheme: 'theme', setFont: 'font', setSize: 'size', setLeading: 'leading', setWidth: 'width' };
+  var SEGS = {
+    setTheme: 'theme', setFont: 'font', setSize: 'size',
+    setLeading: 'leading', setWidth: 'width', setPhoto: 'photo'
+  };
 
   function syncSegs() {
     Object.keys(SEGS).forEach(function (id) {
@@ -321,6 +329,15 @@
     h += '<h2 class="chead__title">' + c.title + '</h2>';
     h += '<div class="chead__rule"></div>';
     h += '</div>';
+
+    var photo = PHOTOS[c.no];
+    if (photo) {
+      h += '<figure class="plate">' +
+           '<div class="plate__frame">' + photo.svg + '</div>' +
+           (photo.caption ? '<figcaption class="plate__cap">' + photo.caption + '</figcaption>' : '') +
+           '</figure>';
+    }
+
     h += '<div class="body">' + render(c.body) + '</div>';
     h += '<div class="chend"><div class="chend__mark">· · ·</div>';
     if (next) {

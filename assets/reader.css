@@ -50,6 +50,10 @@ html[data-theme="light"] {
   --accent-soft: rgba(138, 90, 43, .1);
   --shadow: 0 8px 30px rgba(31, 28, 22, .12);
   --glass: rgba(247, 245, 241, .86);
+  /* 도판 팔레트 */
+  --ph-film: #ded9d0; --ph-hole: #f6f3ed;
+  --ph-sky: #e9e6df; --ph-mid: #cbc7be; --ph-dk: #4d4a44;
+  --ph-hi: #fffefa; --ph-line: #a8a39a; --ph-warm: #a8563d;
 }
 html[data-theme="sepia"] {
   --bg: #f2e7d3;
@@ -64,6 +68,9 @@ html[data-theme="sepia"] {
   --accent-soft: rgba(154, 91, 30, .12);
   --shadow: 0 8px 30px rgba(80, 60, 25, .16);
   --glass: rgba(242, 231, 211, .88);
+  --ph-film: #d7c5a2; --ph-hole: #f4ebd8;
+  --ph-sky: #eaddc1; --ph-mid: #d2c2a1; --ph-dk: #574630;
+  --ph-hi: #fdf7e8; --ph-line: #af9b73; --ph-warm: #a55c2c;
 }
 html[data-theme="dark"] {
   --bg: #14161a;
@@ -78,6 +85,9 @@ html[data-theme="dark"] {
   --accent-soft: rgba(211, 160, 106, .13);
   --shadow: 0 10px 34px rgba(0, 0, 0, .5);
   --glass: rgba(20, 22, 26, .84);
+  --ph-film: #0a0c0f; --ph-hole: #191d23;
+  --ph-sky: #272d35; --ph-mid: #1a1f26; --ph-dk: #0b0d10;
+  --ph-hi: #c8ced5; --ph-line: #3e454f; --ph-warm: #8c4a3a;
 }
 
 * { box-sizing: border-box; }
@@ -452,6 +462,28 @@ html[data-theme="dark"] .btn--primary:hover { color: #17191d; }
   margin: 30px auto 0;
 }
 
+/* ---------- 도판 (각 화의 사진) ---------- */
+.ph-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.plate { margin: 0 0 46px; }
+.plate__frame {
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, .28);
+}
+html[data-theme="light"] .plate__frame,
+html[data-theme="sepia"] .plate__frame { box-shadow: 0 4px 16px rgba(60, 50, 30, .18); }
+.plate__frame svg { display: block; width: 100%; height: auto; }
+.plate__cap {
+  margin: 12px 2px 0;
+  font-family: var(--sans);
+  font-size: 11.5px; line-height: 1.7;
+  letter-spacing: .02em;
+  color: var(--fg-dim);
+  text-align: center;
+}
+html[data-photo="off"] .plate { display: none; }
+
 .body { font-size: var(--fs); line-height: var(--lh); }
 .body p {
   margin: 0 0 1.15em;
@@ -622,6 +654,8 @@ html[data-theme="dark"] .btn--primary:hover { color: #17191d; }
 
 /* ---------- 인쇄 ---------- */
 @media print {
+  .plate { break-inside: avoid; margin-bottom: 24px; }
+  .plate__frame { box-shadow: none; }
   .topbar, .pager, .toc, .scrim, .sheet, .progress, .cover { display: none !important; }
   main { padding: 0; }
   .reader { max-width: none; padding: 0; }

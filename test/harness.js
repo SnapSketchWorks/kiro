@@ -94,7 +94,7 @@ function El(tag, attrs) {
 const IDS = ['topbar', 'topbarChap', 'progressBar', 'btnToc', 'btnTocClose', 'btnTheme',
   'btnSettings', 'toc', 'tocList', 'tocSearch', 'tocStats', 'scrim', 'sheet', 'cover',
   'reader', 'pager', 'btnPrev', 'btnNext', 'btnTop', 'btnStart', 'btnResume', 'btnReset',
-  'coverMeta', 'setTheme', 'setFont', 'setSize', 'setLeading', 'setWidth'];
+  'coverMeta', 'setTheme', 'setFont', 'setSize', 'setLeading', 'setWidth', 'setPhoto'];
 
 const nodes = {};
 IDS.forEach((id) => { nodes[id] = El('div', { id }); });
@@ -105,7 +105,8 @@ const SEG_VALUES = {
   setFont: ['serif', 'sans'],
   setSize: ['1', '2', '3', '4', '5'],
   setLeading: ['tight', 'normal', 'loose'],
-  setWidth: ['narrow', 'normal', 'wide']
+  setWidth: ['narrow', 'normal', 'wide'],
+  setPhoto: ['on', 'off']
 };
 Object.keys(SEG_VALUES).forEach((id) => {
   nodes[id].children = SEG_VALUES[id].map((v) => El('button', { 'data-v': v }));
@@ -264,6 +265,62 @@ global.document._keydown('t');
 check('T 키로 목차 열림', nodes.toc.classList.contains('is-open'));
 global.document._keydown('Escape');
 check('ESC로 목차 닫힘', !nodes.toc.classList.contains('is-open'));
+
+console.log('\n8) 도판 (각 화의 사진)');
+const PH = global.window.PHOTOS || {};
+check('전 25화에 도판 존재', Object.keys(PH).length === 25, Object.keys(PH).length + '개');
+
+/* SVG 태그 정합성 검사 (스택 기반) */
+function svgWellFormed(svg) {
+  const stack = [];
+  const re = /<(\/?)([a-zA-Z][\w:-]*)([^>]*?)(\/?)>/g;
+  let m;
+  while ((m = re.exec(svg))) {
+    const closing = m[1] === '/', tag = m[2], selfClose = m[4] === '/';
+    if (selfClose) continue;
+    if (closing) {
+      if (stack.pop() !== tag) return '닫힘 불일치: ' + tag;
+    } else stack.push(tag);
+  }
+  return stack.length ? '닫히지 않은 태그: ' + stack.join(',') : null;
+}
+
+let phBad = [];
+for (let no = 1; no <= 25; no++) {
+  const p = PH[no];
+  if (!p) { phBad.push(no + '화: 없음'); continue; }
+  if (!/^<svg /.test(p.svg) || !/<\/svg>$/.test(p.svg)) phBad.push(no + '화: svg 래퍼 이상');
+  const err = svgWellFormed(p.svg);
+  if (err) phBad.push(no + '화: ' + err);
+  if (!p.caption || !p.caption.trim()) phBad.push(no + '화: 캡션 없음');
+  if (/undefined|NaN/.test(p.svg)) phBad.push(no + '화: undefined/NaN 포함');
+}
+check('SVG 태그 정합성 · 캡션 · 값 오류', phBad.length === 0, phBad.slice(0, 4).join(' / '));
+
+/* 참조하는 필터 id가 index.html 에 정의돼 있는지 */
+const shell = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+const usedIds = new Set();
+Object.values(PH).forEach((p) => {
+  (p.svg.match(/url\(#([\w-]+)\)/g) || []).forEach((u) => usedIds.add(u.slice(5, -1)));
+});
+const missingDefs = [...usedIds].filter((id) => !shell.includes('id="' + id + '"'));
+check('참조 필터/그라디언트 정의됨 (' + [...usedIds].join(', ') + ')',
+  missingDefs.length === 0, '누락: ' + missingDefs.join(','));
+
+/* 실제 렌더링에 삽입되는지 (1화 다시 렌더) */
+nodes.btnStart.click();
+const rendered = nodes.reader.innerHTML;
+check('본문에 figure.plate 삽입', rendered.includes('<figure class="plate">'));
+check('도판 캡션 출력', rendered.includes('plate__cap'));
+check('도판이 본문보다 앞에 위치',
+  rendered.indexOf('plate') < rendered.indexOf('<div class="body">'));
+
+/* 숨기기 설정 */
+nodes.setPhoto.dispatch('click', { target: nodes.setPhoto.children[1] });
+check('사진 숨기기 설정 반영', documentElement.getAttribute('data-photo') === 'off',
+  documentElement.getAttribute('data-photo'));
+nodes.setPhoto.dispatch('click', { target: nodes.setPhoto.children[0] });
+check('사진 표시 복귀', documentElement.getAttribute('data-photo') === 'on');
 
 console.log('\n========================================');
 console.log(ok + ' 통과 / ' + fail + ' 실패');

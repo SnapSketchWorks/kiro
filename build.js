@@ -36,6 +36,7 @@ fs.writeFileSync(OUT_FILE, html, 'utf8');
 fs.writeFileSync(path.join(OUT_DIR, 'misang.html'), html, 'utf8');
 
 /* 4) 통계 */
+global.window = global.window || {};   /* photos.js 가 window 에 등록하므로 */
 const stats = { n: 0, noSpace: 0, withSpace: 0, parts: {} };
 global.NOVEL = {
   setMeta() {}, addVolume() {},
