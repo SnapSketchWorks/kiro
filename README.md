@@ -10,9 +10,28 @@
 
 ## 바로 읽기
 
-`dist/misang.html` (또는 `dist/미현상.html`) 파일 하나를 내려받아 브라우저로 열면 됩니다. 서버도, 인터넷 연결도 필요하지 않습니다.
+### 웹에서
 
-개발용으로는 `index.html`을 열어도 동일하게 동작합니다.
+**<https://snapsketchworks.github.io/kiro/>**
+
+### 파일로
+
+`dist/misang.html` (또는 `dist/미현상.html`) 하나를 내려받아 브라우저로 열면 됩니다. 서버도, 인터넷 연결도 필요하지 않습니다. 개발용으로는 `index.html`을 열어도 동일하게 동작합니다.
+
+<details>
+<summary>GitHub Pages 켜는 방법 (최초 1회)</summary>
+
+저장소 **Settings → Pages** 에서
+
+- **Source**: `Deploy from a branch`
+- **Branch**: `main` / `/ (root)`
+- **Save**
+
+1~2분 뒤 위 주소로 열립니다. 저장소가 비공개인 경우 Pages는 유료 플랜에서만 동작하므로, 무료 플랜이면 저장소를 공개로 바꿔야 합니다.
+
+이 저장소는 Pages 배포에 맞춰 준비되어 있습니다 — 모든 경로가 상대경로이고, 외부 요청이 0건이며, Jekyll 처리를 막는 `.nojekyll` 이 포함돼 있습니다.
+
+</details>
 
 ## 줄거리
 
