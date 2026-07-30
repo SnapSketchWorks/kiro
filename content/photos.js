@@ -334,19 +334,75 @@
     p.poly('0,286 720,262 720,432 0,432', p.lg([[0, T.m1], [0.35, T.d2], [1, T.d1]]));
     p.rect(0, 262, W, 170, T.m2, { filter: 'url(#f-rough)', opacity: 0.26 });
     p.rect(0, 272, W, 26, T.l3, { opacity: 0.24, filter: 'url(#f-b5)' });
-    /* 샌들 두 짝 — 크고 밝게, 발끝은 물을 향한다 */
-    [[276, 356, -8], [386, 368, 6]].forEach(function (s) {
-      var x = s[0], y = s[1];
-      p.shadow(x + 8, y + 16, 52, 13, 0.6, 5);
+    /* 샌들 두 짝 — 발끝을 물쪽으로 두고 위에서 비스듬히 본다.
+       밑창을 순백으로 두면 흰 끈이 묻혀 도자기처럼 보인다.
+       밑창은 중간 밝기, 끈은 흰색 + 끈 아래 그림자로 분리한다. */
+    [[268, 350, -12, 1.0], [380, 364, 8, 0.95]].forEach(function (s) {
+      var x = s[0], y = s[1], rot = s[2], k = s[3];
+      var L = 74 * k;   /* 앞뒤 길이 */
+      var Wd = 30 * k;  /* 최대 폭 (앞볼) */
+
+      /* 발 모양 밑창: 둥근 뒤꿈치 -> 좁은 허리 -> 넓은 앞볼 -> 둥근 앞코 */
+      function outline(sx, sy) {
+        return 'M ' + (sx - Wd * 0.36) + ' ' + (sy + L * 0.40) +                       /* 뒤꿈치 왼쪽 */
+          ' C ' + (sx - Wd * 0.60) + ' ' + (sy + L * 0.34) + ' ' + (sx - Wd * 0.58) + ' ' + (sy + L * 0.10) +
+          ' ' + (sx - Wd * 0.46) + ' ' + (sy - L * 0.04) +                             /* 허리 */
+          ' C ' + (sx - Wd * 0.36) + ' ' + (sy - L * 0.16) + ' ' + (sx - Wd * 0.94) + ' ' + (sy - L * 0.26) +
+          ' ' + (sx - Wd * 0.92) + ' ' + (sy - L * 0.36) +                             /* 앞볼 왼쪽 */
+          ' C ' + (sx - Wd * 0.90) + ' ' + (sy - L * 0.46) + ' ' + (sx - Wd * 0.30) + ' ' + (sy - L * 0.50) +
+          ' ' + (sx + Wd * 0.16) + ' ' + (sy - L * 0.49) +                             /* 앞코 */
+          ' C ' + (sx + Wd * 0.72) + ' ' + (sy - L * 0.48) + ' ' + (sx + Wd * 0.94) + ' ' + (sy - L * 0.34) +
+          ' ' + (sx + Wd * 0.88) + ' ' + (sy - L * 0.22) +                             /* 앞볼 오른쪽 */
+          ' C ' + (sx + Wd * 0.80) + ' ' + (sy - L * 0.08) + ' ' + (sx + Wd * 0.52) + ' ' + (sy + L * 0.10) +
+          ' ' + (sx + Wd * 0.44) + ' ' + (sy + L * 0.28) +
+          ' C ' + (sx + Wd * 0.38) + ' ' + (sy + L * 0.42) + ' ' + (sx - Wd * 0.08) + ' ' + (sy + L * 0.48) +
+          ' ' + (sx - Wd * 0.36) + ' ' + (sy + L * 0.40) + ' Z';
+      }
+
+      p.shadow(x + 6, y + L * 0.36, Wd * 1.0, L * 0.16, 0.66, 5);
+
       p.g(
-        el('ellipse', { cx: x, cy: y, rx: 50, ry: 17, fill: p.lg([[0, T.ww], [1, T.l2]], { y2: 1 }) }) +
-        el('ellipse', { cx: x - 2, cy: y - 3, rx: 37, ry: 10, fill: p.lg([[0, T.l1], [1, T.l4]]), opacity: 0.9 }) +
-        el('path', {
-          d: 'M ' + (x - 26) + ' ' + (y - 5) + ' Q ' + x + ' ' + (y - 18) + ' ' + (x + 26) + ' ' + (y - 5),
-          fill: 'none', stroke: T.ww, 'stroke-width': 4.4, opacity: 0.95
+        /* 밑창 두께 */
+        el('path', { d: outline(x, y + 5 * k), fill: T.m2, opacity: 0.95 }) +
+        /* 밑창 윗면 — 중간 밝기 (끈과 구분되도록) */
+        el('path', { d: outline(x, y), fill: p.lg([[0, T.l3], [0.5, T.l2], [1, T.m3]], { x2: 0.35, y2: 1 }) }) +
+        /* 발이 닿던 자리 (약간 어둡게) */
+        el('ellipse', {
+          cx: x - Wd * 0.06, cy: y - L * 0.08, rx: Wd * 0.52, ry: L * 0.30,
+          fill: T.m2, opacity: 0.34
         }) +
-        el('ellipse', { cx: x + 22, cy: y - 2, rx: 12, ry: 5, fill: T.ww, opacity: 0.5 }),
-        { transform: 'rotate(' + s[2] + ' ' + x + ' ' + y + ')' }
+        /* 끈 아래 그림자 — 이게 있어야 끈이 밑창에서 떠 보인다 */
+        el('path', {
+          d: 'M ' + (x - Wd * 0.80) + ' ' + (y - L * 0.18) +
+             ' Q ' + (x - Wd * 0.14) + ' ' + (y - L * 0.40) + ' ' + (x + Wd * 0.08) + ' ' + (y - L * 0.46),
+          fill: 'none', stroke: T.m1, 'stroke-width': 6.5 * k,
+          'stroke-linecap': 'round', opacity: 0.55, transform: 'translate(1.5,3)'
+        }) +
+        el('path', {
+          d: 'M ' + (x + Wd * 0.78) + ' ' + (y - L * 0.10) +
+             ' Q ' + (x + Wd * 0.30) + ' ' + (y - L * 0.36) + ' ' + (x + Wd * 0.08) + ' ' + (y - L * 0.46),
+          fill: 'none', stroke: T.m1, 'stroke-width': 6.5 * k,
+          'stroke-linecap': 'round', opacity: 0.55, transform: 'translate(1.5,3)'
+        }) +
+        /* V자 끈 */
+        el('path', {
+          d: 'M ' + (x - Wd * 0.80) + ' ' + (y - L * 0.18) +
+             ' Q ' + (x - Wd * 0.14) + ' ' + (y - L * 0.40) + ' ' + (x + Wd * 0.08) + ' ' + (y - L * 0.46),
+          fill: 'none', stroke: T.ww, 'stroke-width': 5.4 * k, 'stroke-linecap': 'round'
+        }) +
+        el('path', {
+          d: 'M ' + (x + Wd * 0.78) + ' ' + (y - L * 0.10) +
+             ' Q ' + (x + Wd * 0.30) + ' ' + (y - L * 0.36) + ' ' + (x + Wd * 0.08) + ' ' + (y - L * 0.46),
+          fill: 'none', stroke: T.ww, 'stroke-width': 5.4 * k, 'stroke-linecap': 'round'
+        }) +
+        /* 엄지 사이 고정 지점 */
+        el('circle', { cx: x + Wd * 0.08, cy: y - L * 0.46, r: 3.4 * k, fill: T.l4 }) +
+        /* 뒤꿈치 쪽 밑창 하이라이트 */
+        el('ellipse', {
+          cx: x + Wd * 0.02, cy: y + L * 0.34, rx: Wd * 0.34, ry: L * 0.07,
+          fill: T.ww, opacity: 0.5
+        }),
+        { transform: 'rotate(' + rot + ' ' + x + ' ' + y + ')' }
       );
     });
     p.finish(0.24, 0.14);

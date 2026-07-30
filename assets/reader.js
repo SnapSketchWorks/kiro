@@ -569,7 +569,8 @@
 
   /* ---------------- 키보드 ---------------- */
   document.addEventListener('keydown', function (e) {
-    if (e.target.matches('input, textarea')) {
+    /* e.target 이 document 인 경우 matches 가 없어 예외가 난다 */
+    if (e.target && typeof e.target.matches === 'function' && e.target.matches('input, textarea')) {
       if (e.key === 'Escape') { el.tocSearch.blur(); }
       return;
     }
