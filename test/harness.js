@@ -34,6 +34,8 @@ function El(tag, attrs) {
     },
     getAttribute: (k) => (k in self._attrs ? self._attrs[k] : null),
     setAttribute: (k, v) => { self._attrs[k] = String(v); },
+    removeAttribute: (k) => { delete self._attrs[k]; },
+    hasAttribute: (k) => k in self._attrs,
     addEventListener: (type, fn) => {
       (self._listeners[type] = self._listeners[type] || []).push(fn);
     },
@@ -94,7 +96,8 @@ function El(tag, attrs) {
 const IDS = ['topbar', 'topbarChap', 'progressBar', 'btnToc', 'btnTocClose', 'btnTheme',
   'btnSettings', 'toc', 'tocList', 'tocSearch', 'tocStats', 'scrim', 'sheet', 'cover',
   'reader', 'pager', 'btnPrev', 'btnNext', 'btnTop', 'btnStart', 'btnResume', 'btnReset',
-  'coverMeta', 'setTheme', 'setFont', 'setSize', 'setLeading', 'setWidth', 'setPhoto'];
+  'coverMeta', 'setTheme', 'setFont', 'setSize', 'setLeading', 'setWidth', 'setPhoto',
+  'coverHint', 'badgeCount', 'badgeTime', 'btnInfo', 'info'];
 
 const nodes = {};
 IDS.forEach((id) => { nodes[id] = El('div', { id }); });
@@ -212,7 +215,11 @@ check('권 표기 존재', nodes.tocList.innerHTML.includes('제1권'));
 ['제1부 노출', '제2부 잠상', '제3부 현상', '제4부 정착', '종장 수세'].forEach((p) => {
   check('부 표기: ' + p, nodes.tocList.innerHTML.includes(p));
 });
-check('표지 통계 문구', /전 25화/.test(nodes.coverMeta.textContent), nodes.coverMeta.textContent);
+check('표지 배지: 화수', /전 25화/.test(nodes.badgeCount.textContent), nodes.badgeCount.textContent);
+check('표지 배지: 예상 독서 시간', /시간/.test(nodes.badgeTime.textContent), nodes.badgeTime.textContent);
+check('표지 통계: 원고지 매수', /원고지/.test(nodes.coverMeta.textContent), nodes.coverMeta.textContent);
+check('시작 화 예고', /^1화 /.test(nodes.coverHint.textContent), nodes.coverHint.textContent);
+check('목차에 화별 소요 시간', /\d+분/.test(nodes.tocList.innerHTML));
 
 console.log('\n4) 첫 화 렌더링');
 nodes.btnStart.click();
@@ -265,6 +272,34 @@ global.document._keydown('t');
 check('T 키로 목차 열림', nodes.toc.classList.contains('is-open'));
 global.document._keydown('Escape');
 check('ESC로 목차 닫힘', !nodes.toc.classList.contains('is-open'));
+
+console.log('\n7-2) 작품 정보 화면');
+nodes.btnInfo.click();
+check('작품 정보 표시', nodes.info.hidden === false && nodes.cover.hidden === true);
+check('완결 · 화수 표기', /완결/.test(nodes.info.innerHTML) && /전 25화/.test(nodes.info.innerHTML));
+check('분량 · 원고지 표기', /원고지/.test(nodes.info.innerHTML));
+check('피드백 경로', /github\.com\/SnapSketchWorks\/kiro\/issues/.test(nodes.info.innerHTML));
+check('부 구성 표기', /노출/.test(nodes.info.innerHTML) && /수세/.test(nodes.info.innerHTML));
+
+console.log('\n7-3) 접근성 (index.html 정적 검사)');
+const shellHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+const sizeSeg = (shellHtml.match(/id="setSize"[\s\S]*?<\/div>/) || [''])[0];
+const sizeBtns = sizeSeg.match(/<button[^>]*>/g) || [];
+check('글자 크기 버튼 5개', sizeBtns.length === 5, sizeBtns.length + '개');
+check('글자 크기 버튼마다 aria-label',
+  sizeBtns.length === 5 && sizeBtns.every((b) => /aria-label="[^"]+"/.test(b)),
+  sizeBtns.filter((b) => !/aria-label/.test(b)).length + '개 누락');
+check('글자 크기 라벨이 서로 구분됨',
+  new Set(sizeBtns.map((b) => (b.match(/aria-label="([^"]+)"/) || [])[1])).size === 5);
+['setTheme', 'setFont', 'setSize', 'setLeading', 'setWidth', 'setPhoto'].forEach((id) => {
+  const seg = (shellHtml.match(new RegExp('id="' + id + '"[^>]*>')) || [''])[0];
+  check('세그먼트 그룹 이름: ' + id, /aria-labelledby="[^"]+"/.test(seg));
+});
+check('og:image 지정', /property="og:image"\s+content="https:\/\//.test(shellHtml));
+check('og:image 크기 명시',
+  /og:image:width/.test(shellHtml) && /og:image:height/.test(shellHtml));
+check('og:image 대체 텍스트', /og:image:alt/.test(shellHtml));
+check('twitter 카드 large', /name="twitter:card"\s+content="summary_large_image"/.test(shellHtml));
 
 console.log('\n8) 도판 (각 화의 사진)');
 const PH = global.window.PHOTOS || {};

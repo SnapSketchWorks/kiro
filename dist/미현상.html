@@ -7,18 +7,24 @@
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#14161a" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f7f5f1" media="(prefers-color-scheme: light)">
-<meta name="description" content="장편소설 미현상(未現像) — 아버지의 서른세 번째 여름. 사진과 AI, 그리고 한 남자가 쓴 이야기.">
+<meta name="description" content="장편소설 미현상(未現像) — 아버지의 서른세 번째 여름. 아버지가 남긴 문장 천백사십 개로 만든 프로그램, 그 안에 몰래 집어넣은 세 문장, 그리고 실화로 팔린 책. 완결 · 전 25화.">
 <title>미현상(未現像) — 아버지의 서른세 번째 여름</title>
 
 <!-- 공유 카드 (카카오톡 / 슬랙 / 트위터 등) -->
 <meta property="og:type" content="book">
 <meta property="og:site_name" content="미현상">
+<meta property="og:url" content="https://snapsketchworks.github.io/kiro/">
 <meta property="og:title" content="미현상(未現像) — 아버지의 서른세 번째 여름">
-<meta property="og:description" content="아버지가 남긴 것은 낡은 카메라와, 한 번도 빛을 본 적 없는 필름 서른일곱 롤이었다. 전 25화 · 원고지 약 529매.">
+<meta property="og:description" content="아버지의 문장 천백사십 개로 아버지를 만들었다. 그리고 그가 하지 않은 말 세 개를 집어넣었다. 세상은 그 책을 실화라고 믿었다. 완결 · 전 25화 · 약 3시간 40분">
 <meta property="og:locale" content="ko_KR">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://snapsketchworks.github.io/kiro/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="장편소설 미현상 — 필름 프레임 안의 저수지 사진과 제목">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="미현상(未現像) — 아버지의 서른세 번째 여름">
-<meta name="twitter:description" content="사진과 AI를 취미로 하는 마흔셋 남자의 이야기. 전 25화 · 원고지 약 529매.">
+<meta name="twitter:description" content="아버지의 문장 천백사십 개로 아버지를 만들었다. 그리고 그가 하지 않은 말 세 개를 집어넣었다. 완결 · 전 25화">
+<meta name="twitter:image" content="https://snapsketchworks.github.io/kiro/og.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%2314161a'/%3E%3Crect x='9' y='9' width='14' height='14' fill='none' stroke='%23d3a06a' stroke-width='1.6'/%3E%3C/svg%3E">
 
 <style>
@@ -305,6 +311,13 @@ html:not([data-theme="dark"]) .ic-sun { display: none; }
 }
 .toc__item.is-current .toc__no { color: var(--accent); }
 .toc__t { flex: 1 1 auto; }
+.toc__min {
+  flex: 0 0 auto;
+  font-size: 10.5px; color: var(--fg-dim);
+  font-variant-numeric: tabular-nums;
+  opacity: .8;
+}
+.toc__item.is-current .toc__min { color: var(--accent); }
 .toc__dot {
   flex: 0 0 auto; width: 5px; height: 5px; border-radius: 50%;
   background: var(--accent); opacity: 0; margin-top: .55em;
@@ -416,9 +429,36 @@ main { padding-top: var(--topbar-h); }
   font-size: clamp(14px, 4vw, 16px);
   color: var(--fg-soft); letter-spacing: .1em;
 }
+/* 완결 여부 · 화수 · 예상 독서 시간 */
+.cover__badge {
+  margin: 22px 0 0;
+  display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  justify-content: center;
+  padding: 7px 15px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg-elev);
+  font-family: var(--sans); font-size: 11.5px; font-weight: 500;
+  letter-spacing: .04em; color: var(--fg-soft);
+}
+.cover__badge-done { color: var(--accent); font-weight: 700; }
+.cover__badge-sep { opacity: .4; }
+
 .cover__rule {
   width: 46px; height: 1px; background: var(--line);
-  margin: 34px auto;
+  margin: 30px auto;
+}
+
+.cover__hint {
+  margin: 14px 0 0;
+  font-family: var(--sans); font-size: 11.5px;
+  color: var(--fg-dim); letter-spacing: .02em;
+}
+.cover__infolink { margin: 18px 0 0; }
+.textbtn--quiet {
+  font-family: var(--sans); font-size: 12px;
+  color: var(--fg-soft);
+  text-decoration-color: var(--line);
 }
 .cover__blurb {
   margin: 0;
@@ -450,6 +490,64 @@ html[data-theme="dark"] .btn--primary:hover { color: #17191d; }
   margin: 34px 0 0;
   font-family: var(--sans); font-size: 11px; color: var(--fg-dim);
   letter-spacing: .06em;
+}
+
+/* ---------- 작품 정보 ---------- */
+.info {
+  max-width: var(--mw);
+  margin: 0 auto;
+  padding: 30px 22px 60px;
+}
+.info__kicker {
+  font-family: var(--sans); font-size: 10.5px; font-weight: 700;
+  letter-spacing: .26em; color: var(--fg-dim);
+  margin: 0 0 20px;
+}
+.info__title {
+  margin: 0; font-size: clamp(26px, 7vw, 34px); font-weight: 400; letter-spacing: .04em;
+}
+.info__title span { font-size: .42em; color: var(--fg-dim); letter-spacing: .2em; margin-left: 8px; }
+.info__sub { margin: 10px 0 30px; font-size: 14px; color: var(--fg-soft); letter-spacing: .06em; }
+
+.info h3 {
+  margin: 34px 0 12px;
+  font-family: var(--sans); font-size: 12px; font-weight: 700;
+  letter-spacing: .14em; color: var(--accent);
+}
+.info p {
+  margin: 0 0 1.1em;
+  font-size: 15px; line-height: 1.95; color: var(--fg-soft);
+}
+.info__ul { margin: 0; padding-left: 1.1em; }
+.info__ul li {
+  font-family: var(--sans); font-size: 13px; line-height: 2;
+  color: var(--fg-soft); margin-bottom: 4px;
+}
+.info__ul b, .info dd b {
+  font-family: var(--mono); font-size: .92em; font-weight: 600;
+  color: var(--fg);
+  border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px;
+}
+.info__list {
+  margin: 0 0 6px;
+  display: grid; grid-template-columns: 7.5em 1fr; gap: 9px 14px;
+  font-family: var(--sans); font-size: 13px; line-height: 1.75;
+}
+.info__list dt { color: var(--fg-dim); letter-spacing: .04em; }
+.info__list dd { margin: 0; color: var(--fg-soft); }
+.info__note { color: var(--fg-dim); font-size: 11.5px; }
+.info a { color: var(--accent); text-underline-offset: 3px; }
+.info__disclaimer {
+  margin: 34px 0 0; padding-top: 18px;
+  border-top: 1px solid var(--line-soft);
+  font-family: var(--sans); font-size: 11.5px; color: var(--fg-dim);
+}
+.info__actions { margin: 30px 0 0; display: flex; gap: 10px; flex-wrap: wrap; }
+
+@media (max-width: 600px) {
+  .info { padding: 22px 18px 44px; }
+  .info__list { grid-template-columns: 1fr; gap: 2px 0; }
+  .info__list dd { margin-bottom: 10px; }
 }
 
 /* ---------- 본문 ---------- */
@@ -773,8 +871,8 @@ html[data-photo="off"] .plate { display: none; }
     <div class="sheet__grip" aria-hidden="true"></div>
 
     <div class="field">
-      <div class="field__label">테마</div>
-      <div class="seg" id="setTheme" role="group">
+      <div class="field__label" id="lblTheme">테마</div>
+      <div class="seg" id="setTheme" role="group" aria-labelledby="lblTheme">
         <button data-v="auto">시스템</button>
         <button data-v="light">라이트</button>
         <button data-v="sepia">세피아</button>
@@ -783,27 +881,27 @@ html[data-photo="off"] .plate { display: none; }
     </div>
 
     <div class="field">
-      <div class="field__label">글꼴</div>
-      <div class="seg" id="setFont" role="group">
-        <button data-v="serif">명조</button>
-        <button data-v="sans">고딕</button>
+      <div class="field__label" id="lblFont">글꼴</div>
+      <div class="seg" id="setFont" role="group" aria-labelledby="lblFont">
+        <button data-v="serif" title="명조 (세리프)">명조</button>
+        <button data-v="sans" title="고딕 (산세리프)">고딕</button>
       </div>
     </div>
 
     <div class="field">
-      <div class="field__label">글자 크기</div>
-      <div class="seg" id="setSize" role="group">
-        <button data-v="1">가</button>
-        <button data-v="2">가</button>
-        <button data-v="3">가</button>
-        <button data-v="4">가</button>
-        <button data-v="5">가</button>
+      <div class="field__label" id="lblSize">글자 크기</div>
+      <div class="seg" id="setSize" role="group" aria-labelledby="lblSize">
+        <button data-v="1" aria-label="글자 크기 아주 작게" title="아주 작게">가</button>
+        <button data-v="2" aria-label="글자 크기 작게" title="작게">가</button>
+        <button data-v="3" aria-label="글자 크기 보통" title="보통">가</button>
+        <button data-v="4" aria-label="글자 크기 크게" title="크게">가</button>
+        <button data-v="5" aria-label="글자 크기 아주 크게" title="아주 크게">가</button>
       </div>
     </div>
 
     <div class="field">
-      <div class="field__label">줄 간격</div>
-      <div class="seg" id="setLeading" role="group">
+      <div class="field__label" id="lblLeading">줄 간격</div>
+      <div class="seg" id="setLeading" role="group" aria-labelledby="lblLeading">
         <button data-v="tight">좁게</button>
         <button data-v="normal">보통</button>
         <button data-v="loose">넓게</button>
@@ -811,8 +909,8 @@ html[data-photo="off"] .plate { display: none; }
     </div>
 
     <div class="field">
-      <div class="field__label">본문 폭</div>
-      <div class="seg" id="setWidth" role="group">
+      <div class="field__label" id="lblWidth">본문 폭</div>
+      <div class="seg" id="setWidth" role="group" aria-labelledby="lblWidth">
         <button data-v="narrow">좁게</button>
         <button data-v="normal">보통</button>
         <button data-v="wide">넓게</button>
@@ -820,8 +918,8 @@ html[data-photo="off"] .plate { display: none; }
     </div>
 
     <div class="field">
-      <div class="field__label">사진</div>
-      <div class="seg" id="setPhoto" role="group">
+      <div class="field__label" id="lblPhoto">사진</div>
+      <div class="seg" id="setPhoto" role="group" aria-labelledby="lblPhoto">
         <button data-v="on">표시</button>
         <button data-v="off">숨기기</button>
       </div>
@@ -841,21 +939,36 @@ html[data-photo="off"] .plate { display: none; }
       <p class="cover__kicker">장편소설</p>
       <h1 class="cover__title">미현상<span>未現像</span></h1>
       <p class="cover__sub">아버지의 서른세 번째 여름</p>
+
+      <p class="cover__badge" id="coverBadge">
+        <span class="cover__badge-done">완결</span>
+        <span class="cover__badge-sep" aria-hidden="true">·</span>
+        <span id="badgeCount">전 25화</span>
+        <span class="cover__badge-sep" aria-hidden="true">·</span>
+        <span id="badgeTime">약 3시간 40분</span>
+      </p>
+
       <div class="cover__rule" aria-hidden="true"></div>
       <p class="cover__blurb">
         아버지가 남긴 것은 낡은 카메라와, 한 번도 빛을 본 적 없는 필름 서른일곱 롤이었다.<br>
-        마흔셋의 남자는 밤마다 그 필름을 현상하고, 죽은 아버지를 닮은 인공지능과 이야기를 나눈다.<br>
-        그 대화가 책이 되었을 때, 세상은 그것을 실화라고 믿었다.
+        남자는 아버지가 평생 남긴 문장 천백사십 개로 아버지를 흉내 내는 프로그램을 만든다.<br>
+        그리고 새벽 네 시 이십육 분에, 아버지가 하지 않은 말 세 개를 몰래 집어넣는다.<br>
+        그 대화록이 십오만 부가 팔렸을 때, 세상은 그것을 실화라고 믿었다.
       </p>
       <div class="cover__actions">
         <button class="btn btn--primary" id="btnStart">처음부터 읽기</button>
         <button class="btn" id="btnResume" hidden>이어서 읽기</button>
       </div>
+      <p class="cover__hint" id="coverHint"></p>
       <p class="cover__meta" id="coverMeta"></p>
+      <p class="cover__infolink">
+        <button class="textbtn textbtn--quiet" id="btnInfo">작품 정보 · 읽는 방법</button>
+      </p>
     </div>
   </section>
 
   <article class="reader" id="reader" hidden></article>
+  <section class="info" id="info" hidden aria-label="작품 정보"></section>
 </main>
 
 <footer class="pager" id="pager" hidden>
@@ -7215,7 +7328,12 @@ NOVEL.addChapter({
     btnStart: $('btnStart'),
     btnResume: $('btnResume'),
     btnReset: $('btnReset'),
-    coverMeta: $('coverMeta')
+    coverMeta: $('coverMeta'),
+    coverHint: $('coverHint'),
+    badgeCount: $('badgeCount'),
+    badgeTime: $('badgeTime'),
+    btnInfo: $('btnInfo'),
+    info: $('info')
   };
 
   /* ---------------- 설정 ---------------- */
@@ -7379,10 +7497,16 @@ NOVEL.addChapter({
   var partsById = {};
   N.parts.forEach(function (p) { partsById[p.id] = p; });
 
-  var totalChars = 0;
+  /* 한국어 문학 산문 기준 읽기 속도. 공백 포함 분당 글자수.
+     이전에 쓰던 700자/분은 정보성 글 기준으로, 소설에는 너무 빨랐다. */
+  var CPM = 480;
+
+  var totalChars = 0, totalCharsSp = 0;
   chapters.forEach(function (c) {
     c.chars = String(c.body).replace(/\s/g, '').length;
+    c.charsSp = String(c.body).length;
     totalChars += c.chars;
+    totalCharsSp += c.charsSp;
   });
 
   var readSet = {};
@@ -7390,11 +7514,23 @@ NOVEL.addChapter({
 
   var current = -1; // -1 = 표지
 
-  function minutes(chars) { return Math.max(1, Math.round(chars / 700)); }
+  function minutes(charsSp) { return Math.max(1, Math.round(charsSp / CPM)); }
 
+  function hhmm(charsSp) {
+    var m = Math.round(charsSp / CPM);
+    var h = Math.floor(m / 60), mm = m % 60;
+    if (h <= 0) return m + '분';
+    return h + '시간' + (mm ? ' ' + mm + '분' : '');
+  }
+
+  el.badgeCount.textContent = '전 ' + chapters.length + '화';
+  el.badgeTime.textContent = '약 ' + hhmm(totalCharsSp);
   el.coverMeta.textContent =
-    '전 ' + chapters.length + '화 · 약 ' + totalChars.toLocaleString('ko-KR') + '자 · 예상 독서 ' +
-    Math.round(totalChars / 700 / 60 * 10) / 10 + '시간';
+    '제1권 · 4부 + 종장 · 공백 포함 ' + totalCharsSp.toLocaleString('ko-KR') + '자 · ' +
+    '200자 원고지 약 ' + Math.round(totalCharsSp / 200).toLocaleString('ko-KR') + '매';
+  if (chapters.length) {
+    el.coverHint.textContent = '1화 ' + chapters[0].title + ' 부터 시작합니다';
+  }
 
   /* ---------------- 목차 ---------------- */
   function buildToc() {
@@ -7415,6 +7551,7 @@ NOVEL.addChapter({
       html += '<button class="toc__item" data-idx="' + idx + '" data-t="' + (c.title || '').replace(/"/g, '') + '">' +
               '<span class="toc__no">' + c.no + '화</span>' +
               '<span class="toc__t">' + c.title + '</span>' +
+              '<span class="toc__min">' + minutes(c.charsSp) + '분</span>' +
               '<span class="toc__dot"></span></button>';
     });
     el.tocList.innerHTML = html;
@@ -7426,6 +7563,8 @@ NOVEL.addChapter({
       var i = +b.getAttribute('data-idx');
       b.classList.toggle('is-current', i === current);
       b.classList.toggle('is-read', !!readSet[chapters[i].no]);
+      if (i === current) b.setAttribute('aria-current', 'true');
+      else b.removeAttribute('aria-current');
     });
     var readCount = chapters.filter(function (c) { return readSet[c.no]; }).length;
     el.tocStats.textContent = '읽은 화 ' + readCount + ' / ' + chapters.length +
@@ -7536,6 +7675,7 @@ NOVEL.addChapter({
     var c = chapters[idx];
 
     el.cover.hidden = true;
+    if (el.info) el.info.hidden = true;
     el.reader.hidden = false;
     el.pager.hidden = false;
     el.reader.innerHTML = chapterHtml(c, idx);
@@ -7569,6 +7709,7 @@ NOVEL.addChapter({
 
   function showCover() {
     current = -1;
+    if (el.info) el.info.hidden = true;
     el.reader.hidden = true;
     el.pager.hidden = true;
     el.cover.hidden = false;
@@ -7586,6 +7727,87 @@ NOVEL.addChapter({
   el.btnNext.addEventListener('click', function () { go(current + 1); });
   el.btnTop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
   el.btnStart.addEventListener('click', function () { go(0); });
+
+  /* ---------------- 작품 정보 ---------------- */
+  function infoHtml() {
+    var parts = N.parts.filter(function (p) { return p.volume === 1; });
+    return '' +
+      '<div class="info__inner">' +
+      '<p class="info__kicker">작품 정보</p>' +
+      '<h2 class="info__title">미현상 <span>未現像</span></h2>' +
+      '<p class="info__sub">아버지의 서른세 번째 여름</p>' +
+
+      '<dl class="info__list">' +
+      '<dt>상태</dt><dd>완결 · 전 ' + chapters.length + '화 (제1권 ' +
+        (parts.length - 1) + '부 + 종장)</dd>' +
+      '<dt>분량</dt><dd>공백 포함 ' + totalCharsSp.toLocaleString('ko-KR') + '자 · ' +
+        '200자 원고지 약 ' + Math.round(totalCharsSp / 200).toLocaleString('ko-KR') + '매 · ' +
+        '신국판 약 ' + Math.round(totalCharsSp / 420) + '쪽</dd>' +
+      '<dt>예상 독서 시간</dt><dd>약 ' + hhmm(totalCharsSp) +
+        ' <span class="info__note">(분당 ' + CPM + '자 기준)</span></dd>' +
+      '<dt>구성</dt><dd>' + parts.map(function (p) {
+        return p.label + ' ' + p.title + '(' + p.hanja + ')';
+      }).join(' · ') + '</dd>' +
+      '</dl>' +
+
+      '<h3>작품 노트</h3>' +
+      '<p>사진을 현상하는 순서를 그대로 작품의 구조로 썼습니다. 노출에서 잠상, 현상, 정착, 수세로 ' +
+      '가는 동안 하나의 상(像)이 나타나고 고정됩니다. 미현상이란 아직 나타나지 않은 상태, ' +
+      '있는 것도 아니고 없는 것도 아닌 상태를 가리킵니다.</p>' +
+      '<p>이 소설은 죽은 사람을 인공지능으로 되살리는 이야기가 아닙니다. ' +
+      '아버지가 평생 남긴 문장은 천백사십 개였고, 주인공이 그 데이터에 몰래 집어넣은 문장은 세 개였습니다. ' +
+      '그 세 문장이 십오만 부의 책에서 가장 사랑받는 대목이 됩니다. ' +
+      '진짜 질문은 기계가 아니라 그 자리에 있습니다. 위로가 위조된 것이라면 그 위로는 가짜인가. ' +
+      '그리고 동의할 수 없는 사람의 이야기를 쓸 권리는 누구에게 있는가.</p>' +
+
+      '<h3>읽는 방법</h3>' +
+      '<ul class="info__ul">' +
+      '<li>읽던 화와 스크롤 위치가 자동으로 저장됩니다. 표지의 <b>이어서 읽기</b>로 돌아옵니다.</li>' +
+      '<li>PC에서는 <b>← →</b> 로 화를 옮기고, <b>T</b> 목차 · <b>D</b> 테마 · <b>C</b> 표지입니다.</li>' +
+      '<li>모바일에서는 좌우로 넘기면 화가 바뀝니다.</li>' +
+      '<li>오른쪽 위 설정에서 테마 · 글꼴 · 글자 크기 · 줄 간격 · 본문 폭 · 사진 표시를 바꿀 수 있습니다.</li>' +
+      '<li>주소 끝에 <b>#12</b> 처럼 붙이면 해당 화로 바로 갑니다.</li>' +
+      '</ul>' +
+
+      '<h3>사진에 대하여</h3>' +
+      '<p>각 화에 붙은 흑백 사진은 촬영한 것이 아니라 코드로 그린 것입니다. ' +
+      '외부 이미지 파일 없이 SVG 필터로 계조를 만들었습니다. 설정에서 숨길 수 있습니다.</p>' +
+
+      '<h3>이 판에 대하여</h3>' +
+      '<dl class="info__list">' +
+      '<dt>형식</dt><dd>의존성 없는 단일 HTML. 내려받아 오프라인에서도 읽을 수 있습니다.</dd>' +
+      '<dt>피드백</dt><dd><a href="https://github.com/SnapSketchWorks/kiro/issues" ' +
+        'target="_blank" rel="noopener">GitHub 이슈</a>로 오탈자와 의견을 보내 주세요.</dd>' +
+      '<dt>저장소</dt><dd><a href="https://github.com/SnapSketchWorks/kiro" ' +
+        'target="_blank" rel="noopener">github.com/SnapSketchWorks/kiro</a></dd>' +
+      '</dl>' +
+
+      '<p class="info__disclaimer">등장하는 인물 · 지명 · 단체는 모두 허구입니다.</p>' +
+
+      '<div class="info__actions">' +
+      '<button class="btn btn--primary" data-info-start>처음부터 읽기</button>' +
+      '<button class="btn" data-info-close>표지로</button>' +
+      '</div></div>';
+  }
+
+  function showInfo() {
+    el.info.innerHTML = infoHtml();
+    el.cover.hidden = true;
+    el.reader.hidden = true;
+    el.pager.hidden = true;
+    el.info.hidden = false;
+    el.topbarChap.textContent = '작품 정보';
+    el.topbar.classList.remove('is-hidden');
+    window.scrollTo(0, 0);
+  }
+
+  if (el.btnInfo) el.btnInfo.addEventListener('click', showInfo);
+  if (el.info) {
+    el.info.addEventListener('click', function (e) {
+      if (e.target.closest('[data-info-start]')) go(0);
+      else if (e.target.closest('[data-info-close]')) showCover();
+    });
+  }
 
   /* ---------------- 위치 저장 ---------------- */
   function savePos() {

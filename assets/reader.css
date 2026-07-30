@@ -281,6 +281,13 @@ html:not([data-theme="dark"]) .ic-sun { display: none; }
 }
 .toc__item.is-current .toc__no { color: var(--accent); }
 .toc__t { flex: 1 1 auto; }
+.toc__min {
+  flex: 0 0 auto;
+  font-size: 10.5px; color: var(--fg-dim);
+  font-variant-numeric: tabular-nums;
+  opacity: .8;
+}
+.toc__item.is-current .toc__min { color: var(--accent); }
 .toc__dot {
   flex: 0 0 auto; width: 5px; height: 5px; border-radius: 50%;
   background: var(--accent); opacity: 0; margin-top: .55em;
@@ -392,9 +399,36 @@ main { padding-top: var(--topbar-h); }
   font-size: clamp(14px, 4vw, 16px);
   color: var(--fg-soft); letter-spacing: .1em;
 }
+/* 완결 여부 · 화수 · 예상 독서 시간 */
+.cover__badge {
+  margin: 22px 0 0;
+  display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  justify-content: center;
+  padding: 7px 15px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg-elev);
+  font-family: var(--sans); font-size: 11.5px; font-weight: 500;
+  letter-spacing: .04em; color: var(--fg-soft);
+}
+.cover__badge-done { color: var(--accent); font-weight: 700; }
+.cover__badge-sep { opacity: .4; }
+
 .cover__rule {
   width: 46px; height: 1px; background: var(--line);
-  margin: 34px auto;
+  margin: 30px auto;
+}
+
+.cover__hint {
+  margin: 14px 0 0;
+  font-family: var(--sans); font-size: 11.5px;
+  color: var(--fg-dim); letter-spacing: .02em;
+}
+.cover__infolink { margin: 18px 0 0; }
+.textbtn--quiet {
+  font-family: var(--sans); font-size: 12px;
+  color: var(--fg-soft);
+  text-decoration-color: var(--line);
 }
 .cover__blurb {
   margin: 0;
@@ -426,6 +460,64 @@ html[data-theme="dark"] .btn--primary:hover { color: #17191d; }
   margin: 34px 0 0;
   font-family: var(--sans); font-size: 11px; color: var(--fg-dim);
   letter-spacing: .06em;
+}
+
+/* ---------- 작품 정보 ---------- */
+.info {
+  max-width: var(--mw);
+  margin: 0 auto;
+  padding: 30px 22px 60px;
+}
+.info__kicker {
+  font-family: var(--sans); font-size: 10.5px; font-weight: 700;
+  letter-spacing: .26em; color: var(--fg-dim);
+  margin: 0 0 20px;
+}
+.info__title {
+  margin: 0; font-size: clamp(26px, 7vw, 34px); font-weight: 400; letter-spacing: .04em;
+}
+.info__title span { font-size: .42em; color: var(--fg-dim); letter-spacing: .2em; margin-left: 8px; }
+.info__sub { margin: 10px 0 30px; font-size: 14px; color: var(--fg-soft); letter-spacing: .06em; }
+
+.info h3 {
+  margin: 34px 0 12px;
+  font-family: var(--sans); font-size: 12px; font-weight: 700;
+  letter-spacing: .14em; color: var(--accent);
+}
+.info p {
+  margin: 0 0 1.1em;
+  font-size: 15px; line-height: 1.95; color: var(--fg-soft);
+}
+.info__ul { margin: 0; padding-left: 1.1em; }
+.info__ul li {
+  font-family: var(--sans); font-size: 13px; line-height: 2;
+  color: var(--fg-soft); margin-bottom: 4px;
+}
+.info__ul b, .info dd b {
+  font-family: var(--mono); font-size: .92em; font-weight: 600;
+  color: var(--fg);
+  border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px;
+}
+.info__list {
+  margin: 0 0 6px;
+  display: grid; grid-template-columns: 7.5em 1fr; gap: 9px 14px;
+  font-family: var(--sans); font-size: 13px; line-height: 1.75;
+}
+.info__list dt { color: var(--fg-dim); letter-spacing: .04em; }
+.info__list dd { margin: 0; color: var(--fg-soft); }
+.info__note { color: var(--fg-dim); font-size: 11.5px; }
+.info a { color: var(--accent); text-underline-offset: 3px; }
+.info__disclaimer {
+  margin: 34px 0 0; padding-top: 18px;
+  border-top: 1px solid var(--line-soft);
+  font-family: var(--sans); font-size: 11.5px; color: var(--fg-dim);
+}
+.info__actions { margin: 30px 0 0; display: flex; gap: 10px; flex-wrap: wrap; }
+
+@media (max-width: 600px) {
+  .info { padding: 22px 18px 44px; }
+  .info__list { grid-template-columns: 1fr; gap: 2px 0; }
+  .info__list dd { margin-bottom: 10px; }
 }
 
 /* ---------- 본문 ---------- */

@@ -37,7 +37,12 @@
     btnStart: $('btnStart'),
     btnResume: $('btnResume'),
     btnReset: $('btnReset'),
-    coverMeta: $('coverMeta')
+    coverMeta: $('coverMeta'),
+    coverHint: $('coverHint'),
+    badgeCount: $('badgeCount'),
+    badgeTime: $('badgeTime'),
+    btnInfo: $('btnInfo'),
+    info: $('info')
   };
 
   /* ---------------- 설정 ---------------- */
@@ -201,10 +206,16 @@
   var partsById = {};
   N.parts.forEach(function (p) { partsById[p.id] = p; });
 
-  var totalChars = 0;
+  /* 한국어 문학 산문 기준 읽기 속도. 공백 포함 분당 글자수.
+     이전에 쓰던 700자/분은 정보성 글 기준으로, 소설에는 너무 빨랐다. */
+  var CPM = 480;
+
+  var totalChars = 0, totalCharsSp = 0;
   chapters.forEach(function (c) {
     c.chars = String(c.body).replace(/\s/g, '').length;
+    c.charsSp = String(c.body).length;
     totalChars += c.chars;
+    totalCharsSp += c.charsSp;
   });
 
   var readSet = {};
@@ -212,11 +223,23 @@
 
   var current = -1; // -1 = 표지
 
-  function minutes(chars) { return Math.max(1, Math.round(chars / 700)); }
+  function minutes(charsSp) { return Math.max(1, Math.round(charsSp / CPM)); }
 
+  function hhmm(charsSp) {
+    var m = Math.round(charsSp / CPM);
+    var h = Math.floor(m / 60), mm = m % 60;
+    if (h <= 0) return m + '분';
+    return h + '시간' + (mm ? ' ' + mm + '분' : '');
+  }
+
+  el.badgeCount.textContent = '전 ' + chapters.length + '화';
+  el.badgeTime.textContent = '약 ' + hhmm(totalCharsSp);
   el.coverMeta.textContent =
-    '전 ' + chapters.length + '화 · 약 ' + totalChars.toLocaleString('ko-KR') + '자 · 예상 독서 ' +
-    Math.round(totalChars / 700 / 60 * 10) / 10 + '시간';
+    '제1권 · 4부 + 종장 · 공백 포함 ' + totalCharsSp.toLocaleString('ko-KR') + '자 · ' +
+    '200자 원고지 약 ' + Math.round(totalCharsSp / 200).toLocaleString('ko-KR') + '매';
+  if (chapters.length) {
+    el.coverHint.textContent = '1화 ' + chapters[0].title + ' 부터 시작합니다';
+  }
 
   /* ---------------- 목차 ---------------- */
   function buildToc() {
@@ -237,6 +260,7 @@
       html += '<button class="toc__item" data-idx="' + idx + '" data-t="' + (c.title || '').replace(/"/g, '') + '">' +
               '<span class="toc__no">' + c.no + '화</span>' +
               '<span class="toc__t">' + c.title + '</span>' +
+              '<span class="toc__min">' + minutes(c.charsSp) + '분</span>' +
               '<span class="toc__dot"></span></button>';
     });
     el.tocList.innerHTML = html;
@@ -248,6 +272,8 @@
       var i = +b.getAttribute('data-idx');
       b.classList.toggle('is-current', i === current);
       b.classList.toggle('is-read', !!readSet[chapters[i].no]);
+      if (i === current) b.setAttribute('aria-current', 'true');
+      else b.removeAttribute('aria-current');
     });
     var readCount = chapters.filter(function (c) { return readSet[c.no]; }).length;
     el.tocStats.textContent = '읽은 화 ' + readCount + ' / ' + chapters.length +
@@ -358,6 +384,7 @@
     var c = chapters[idx];
 
     el.cover.hidden = true;
+    if (el.info) el.info.hidden = true;
     el.reader.hidden = false;
     el.pager.hidden = false;
     el.reader.innerHTML = chapterHtml(c, idx);
@@ -391,6 +418,7 @@
 
   function showCover() {
     current = -1;
+    if (el.info) el.info.hidden = true;
     el.reader.hidden = true;
     el.pager.hidden = true;
     el.cover.hidden = false;
@@ -408,6 +436,89 @@
   el.btnNext.addEventListener('click', function () { go(current + 1); });
   el.btnTop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
   el.btnStart.addEventListener('click', function () { go(0); });
+
+  /* ---------------- 작품 정보 ---------------- */
+  function infoHtml() {
+    var parts = N.parts.filter(function (p) { return p.volume === 1; });
+    return '' +
+      '<div class="info__inner">' +
+      '<p class="info__kicker">작품 정보</p>' +
+      '<h2 class="info__title">미현상 <span>未現像</span></h2>' +
+      '<p class="info__sub">아버지의 서른세 번째 여름</p>' +
+
+      '<dl class="info__list">' +
+      '<dt>상태</dt><dd>완결 · 전 ' + chapters.length + '화 (제1권 ' +
+        (parts.length - 1) + '부 + 종장)</dd>' +
+      '<dt>분량</dt><dd>공백 포함 ' + totalCharsSp.toLocaleString('ko-KR') + '자 · ' +
+        '200자 원고지 약 ' + Math.round(totalCharsSp / 200).toLocaleString('ko-KR') + '매 · ' +
+        '신국판 약 ' + Math.round(totalCharsSp / 420) + '쪽</dd>' +
+      '<dt>예상 독서 시간</dt><dd>약 ' + hhmm(totalCharsSp) +
+        ' <span class="info__note">(분당 ' + CPM + '자 기준)</span></dd>' +
+      '<dt>구성</dt><dd>' + parts.map(function (p) {
+        return p.label + ' ' + p.title + '(' + p.hanja + ')';
+      }).join(' · ') + '</dd>' +
+      '</dl>' +
+
+      '<h3>작품 노트</h3>' +
+      '<p>사진을 현상하는 순서를 그대로 작품의 구조로 썼습니다. 노출에서 잠상, 현상, 정착, 수세로 ' +
+      '가는 동안 하나의 상(像)이 나타나고 고정됩니다. 미현상이란 아직 나타나지 않은 상태, ' +
+      '있는 것도 아니고 없는 것도 아닌 상태를 가리킵니다.</p>' +
+      '<p>이 소설은 죽은 사람을 인공지능으로 되살리는 이야기가 아닙니다. ' +
+      '아버지가 평생 남긴 문장은 천백사십 개였고, 주인공이 그 데이터에 몰래 집어넣은 문장은 세 개였습니다. ' +
+      '그 세 문장이 십오만 부의 책에서 가장 사랑받는 대목이 됩니다. ' +
+      '진짜 질문은 기계가 아니라 그 자리에 있습니다. 위로가 위조된 것이라면 그 위로는 가짜인가. ' +
+      '그리고 동의할 수 없는 사람의 이야기를 쓸 권리는 누구에게 있는가.</p>' +
+
+      '<h3>읽는 방법</h3>' +
+      '<ul class="info__ul">' +
+      '<li>읽던 화와 스크롤 위치가 자동으로 저장됩니다. 표지의 <b>이어서 읽기</b>로 돌아옵니다.</li>' +
+      '<li>PC에서는 <b>← →</b> 로 화를 옮기고, <b>T</b> 목차 · <b>D</b> 테마 · <b>C</b> 표지입니다.</li>' +
+      '<li>모바일에서는 좌우로 넘기면 화가 바뀝니다.</li>' +
+      '<li>오른쪽 위 설정에서 테마 · 글꼴 · 글자 크기 · 줄 간격 · 본문 폭 · 사진 표시를 바꿀 수 있습니다.</li>' +
+      '<li>주소 끝에 <b>#12</b> 처럼 붙이면 해당 화로 바로 갑니다.</li>' +
+      '</ul>' +
+
+      '<h3>사진에 대하여</h3>' +
+      '<p>각 화에 붙은 흑백 사진은 촬영한 것이 아니라 코드로 그린 것입니다. ' +
+      '외부 이미지 파일 없이 SVG 필터로 계조를 만들었습니다. 설정에서 숨길 수 있습니다.</p>' +
+
+      '<h3>이 판에 대하여</h3>' +
+      '<dl class="info__list">' +
+      '<dt>형식</dt><dd>의존성 없는 단일 HTML. 내려받아 오프라인에서도 읽을 수 있습니다.</dd>' +
+      '<dt>피드백</dt><dd><a href="https://github.com/SnapSketchWorks/kiro/issues" ' +
+        'target="_blank" rel="noopener">GitHub 이슈</a>로 오탈자와 의견을 보내 주세요.</dd>' +
+      '<dt>저장소</dt><dd><a href="https://github.com/SnapSketchWorks/kiro" ' +
+        'target="_blank" rel="noopener">github.com/SnapSketchWorks/kiro</a></dd>' +
+      '</dl>' +
+
+      '<p class="info__disclaimer">등장하는 인물 · 지명 · 단체는 모두 허구입니다.</p>' +
+
+      '<div class="info__actions">' +
+      '<button class="btn btn--primary" data-info-start>처음부터 읽기</button>' +
+      '<button class="btn" data-info-close>표지로</button>' +
+      '</div></div>';
+  }
+
+  function showInfo() {
+    el.info.innerHTML = infoHtml();
+    el.cover.hidden = true;
+    el.reader.hidden = true;
+    el.pager.hidden = true;
+    el.info.hidden = false;
+    el.topbarChap.textContent = '작품 정보';
+    el.topbar.classList.remove('is-hidden');
+    document.title = '작품 정보 — 미현상';
+    if (location.hash !== '#info') history.replaceState(null, '', '#info');
+    window.scrollTo(0, 0);
+  }
+
+  if (el.btnInfo) el.btnInfo.addEventListener('click', showInfo);
+  if (el.info) {
+    el.info.addEventListener('click', function (e) {
+      if (e.target.closest('[data-info-start]')) go(0);
+      else if (e.target.closest('[data-info-close]')) showCover();
+    });
+  }
 
   /* ---------------- 위치 저장 ---------------- */
   function savePos() {
@@ -499,6 +610,9 @@
     }
   }
 
+  if ((location.hash || '') === '#info') {
+    showInfo();
+  }
   var hashNo = parseInt((location.hash || '').replace('#', ''), 10);
   if (hashNo) {
     var hi = -1;
@@ -507,6 +621,7 @@
   }
 
   window.addEventListener('hashchange', function () {
+    if ((location.hash || '') === '#info') { showInfo(); return; }
     var n = parseInt((location.hash || '').replace('#', ''), 10);
     if (!n) return;
     var i = -1;

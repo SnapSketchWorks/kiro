@@ -6,18 +6,24 @@
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#14161a" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f7f5f1" media="(prefers-color-scheme: light)">
-<meta name="description" content="장편소설 미현상(未現像) — 아버지의 서른세 번째 여름. 사진과 AI, 그리고 한 남자가 쓴 이야기.">
+<meta name="description" content="장편소설 미현상(未現像) — 아버지의 서른세 번째 여름. 아버지가 남긴 문장 천백사십 개로 만든 프로그램, 그 안에 몰래 집어넣은 세 문장, 그리고 실화로 팔린 책. 완결 · 전 25화.">
 <title>미현상(未現像) — 아버지의 서른세 번째 여름</title>
 
 <!-- 공유 카드 (카카오톡 / 슬랙 / 트위터 등) -->
 <meta property="og:type" content="book">
 <meta property="og:site_name" content="미현상">
+<meta property="og:url" content="https://snapsketchworks.github.io/kiro/">
 <meta property="og:title" content="미현상(未現像) — 아버지의 서른세 번째 여름">
-<meta property="og:description" content="아버지가 남긴 것은 낡은 카메라와, 한 번도 빛을 본 적 없는 필름 서른일곱 롤이었다. 전 25화 · 원고지 약 529매.">
+<meta property="og:description" content="아버지의 문장 천백사십 개로 아버지를 만들었다. 그리고 그가 하지 않은 말 세 개를 집어넣었다. 세상은 그 책을 실화라고 믿었다. 완결 · 전 25화 · 약 3시간 40분">
 <meta property="og:locale" content="ko_KR">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://snapsketchworks.github.io/kiro/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="장편소설 미현상 — 필름 프레임 안의 저수지 사진과 제목">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="미현상(未現像) — 아버지의 서른세 번째 여름">
-<meta name="twitter:description" content="사진과 AI를 취미로 하는 마흔셋 남자의 이야기. 전 25화 · 원고지 약 529매.">
+<meta name="twitter:description" content="아버지의 문장 천백사십 개로 아버지를 만들었다. 그리고 그가 하지 않은 말 세 개를 집어넣었다. 완결 · 전 25화">
+<meta name="twitter:image" content="https://snapsketchworks.github.io/kiro/og.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%2314161a'/%3E%3Crect x='9' y='9' width='14' height='14' fill='none' stroke='%23d3a06a' stroke-width='1.6'/%3E%3C/svg%3E">
 
 <link rel="stylesheet" href="assets/reader.css">
@@ -103,8 +109,8 @@
     <div class="sheet__grip" aria-hidden="true"></div>
 
     <div class="field">
-      <div class="field__label">테마</div>
-      <div class="seg" id="setTheme" role="group">
+      <div class="field__label" id="lblTheme">테마</div>
+      <div class="seg" id="setTheme" role="group" aria-labelledby="lblTheme">
         <button data-v="auto">시스템</button>
         <button data-v="light">라이트</button>
         <button data-v="sepia">세피아</button>
@@ -113,27 +119,27 @@
     </div>
 
     <div class="field">
-      <div class="field__label">글꼴</div>
-      <div class="seg" id="setFont" role="group">
-        <button data-v="serif">명조</button>
-        <button data-v="sans">고딕</button>
+      <div class="field__label" id="lblFont">글꼴</div>
+      <div class="seg" id="setFont" role="group" aria-labelledby="lblFont">
+        <button data-v="serif" title="명조 (세리프)">명조</button>
+        <button data-v="sans" title="고딕 (산세리프)">고딕</button>
       </div>
     </div>
 
     <div class="field">
-      <div class="field__label">글자 크기</div>
-      <div class="seg" id="setSize" role="group">
-        <button data-v="1">가</button>
-        <button data-v="2">가</button>
-        <button data-v="3">가</button>
-        <button data-v="4">가</button>
-        <button data-v="5">가</button>
+      <div class="field__label" id="lblSize">글자 크기</div>
+      <div class="seg" id="setSize" role="group" aria-labelledby="lblSize">
+        <button data-v="1" aria-label="글자 크기 아주 작게" title="아주 작게">가</button>
+        <button data-v="2" aria-label="글자 크기 작게" title="작게">가</button>
+        <button data-v="3" aria-label="글자 크기 보통" title="보통">가</button>
+        <button data-v="4" aria-label="글자 크기 크게" title="크게">가</button>
+        <button data-v="5" aria-label="글자 크기 아주 크게" title="아주 크게">가</button>
       </div>
     </div>
 
     <div class="field">
-      <div class="field__label">줄 간격</div>
-      <div class="seg" id="setLeading" role="group">
+      <div class="field__label" id="lblLeading">줄 간격</div>
+      <div class="seg" id="setLeading" role="group" aria-labelledby="lblLeading">
         <button data-v="tight">좁게</button>
         <button data-v="normal">보통</button>
         <button data-v="loose">넓게</button>
@@ -141,8 +147,8 @@
     </div>
 
     <div class="field">
-      <div class="field__label">본문 폭</div>
-      <div class="seg" id="setWidth" role="group">
+      <div class="field__label" id="lblWidth">본문 폭</div>
+      <div class="seg" id="setWidth" role="group" aria-labelledby="lblWidth">
         <button data-v="narrow">좁게</button>
         <button data-v="normal">보통</button>
         <button data-v="wide">넓게</button>
@@ -150,8 +156,8 @@
     </div>
 
     <div class="field">
-      <div class="field__label">사진</div>
-      <div class="seg" id="setPhoto" role="group">
+      <div class="field__label" id="lblPhoto">사진</div>
+      <div class="seg" id="setPhoto" role="group" aria-labelledby="lblPhoto">
         <button data-v="on">표시</button>
         <button data-v="off">숨기기</button>
       </div>
@@ -171,21 +177,36 @@
       <p class="cover__kicker">장편소설</p>
       <h1 class="cover__title">미현상<span>未現像</span></h1>
       <p class="cover__sub">아버지의 서른세 번째 여름</p>
+
+      <p class="cover__badge" id="coverBadge">
+        <span class="cover__badge-done">완결</span>
+        <span class="cover__badge-sep" aria-hidden="true">·</span>
+        <span id="badgeCount">전 25화</span>
+        <span class="cover__badge-sep" aria-hidden="true">·</span>
+        <span id="badgeTime">약 3시간 40분</span>
+      </p>
+
       <div class="cover__rule" aria-hidden="true"></div>
       <p class="cover__blurb">
         아버지가 남긴 것은 낡은 카메라와, 한 번도 빛을 본 적 없는 필름 서른일곱 롤이었다.<br>
-        마흔셋의 남자는 밤마다 그 필름을 현상하고, 죽은 아버지를 닮은 인공지능과 이야기를 나눈다.<br>
-        그 대화가 책이 되었을 때, 세상은 그것을 실화라고 믿었다.
+        남자는 아버지가 평생 남긴 문장 천백사십 개로 아버지를 흉내 내는 프로그램을 만든다.<br>
+        그리고 새벽 네 시 이십육 분에, 아버지가 하지 않은 말 세 개를 몰래 집어넣는다.<br>
+        그 대화록이 십오만 부가 팔렸을 때, 세상은 그것을 실화라고 믿었다.
       </p>
       <div class="cover__actions">
         <button class="btn btn--primary" id="btnStart">처음부터 읽기</button>
         <button class="btn" id="btnResume" hidden>이어서 읽기</button>
       </div>
+      <p class="cover__hint" id="coverHint"></p>
       <p class="cover__meta" id="coverMeta"></p>
+      <p class="cover__infolink">
+        <button class="textbtn textbtn--quiet" id="btnInfo">작품 정보 · 읽는 방법</button>
+      </p>
     </div>
   </section>
 
   <article class="reader" id="reader" hidden></article>
+  <section class="info" id="info" hidden aria-label="작품 정보"></section>
 </main>
 
 <footer class="pager" id="pager" hidden>

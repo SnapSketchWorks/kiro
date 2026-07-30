@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>og card</title>
+<!--
+  공유 카드 이미지.
+
+  제목과 소개문은 이미지에 넣지 않는다. 카카오톡 · 슬랙 · 트위터 등은
+  og:title / og:description 을 각자의 폰트로 렌더해 이미지와 함께 보여준다.
+  이미지에 텍스트를 구우면 (1) 플랫폼이 표시하는 제목과 중복되고
+  (2) 렌더 환경에 한글 폰트가 없으면 글자가 깨진다.
+  그래서 여기서는 사진만 담고, 숫자로 된 날짜 하나만 얹는다.
+-->
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body { background: #0b0d10; position: relative; }
+
+  /* 도판의 이미지 영역만 화면에 꽉 채운다 (스프로켓 스트립은 잘라낸다) */
+  .stage { position: absolute; inset: 0; overflow: hidden; filter: brightness(1.07) contrast(1.03); }
+  .stage .plate {
+    position: absolute;
+    top: -148px; left: 0;
+    width: 1200px;
+  }
+  .stage svg { display: block; width: 100%; height: auto; }
+
+  /* 아래쪽을 눌러 글자가 읽히게 */
+  .scrim {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(to top, rgba(6,8,10,.52) 0%, rgba(6,8,10,.16) 22%, transparent 44%),
+      radial-gradient(126% 84% at 50% 40%, transparent 46%, rgba(6,8,10,.42) 100%);
+  }
+
+  /* 숫자만 사용 — 어떤 환경에서도 깨지지 않는다 */
+  .date {
+    position: absolute; left: 62px; bottom: 56px;
+    font-family: "Noto Sans", -apple-system, system-ui, sans-serif;
+    font-size: 34px; font-weight: 300; letter-spacing: .2em;
+    color: #e7ebef;
+    text-shadow: 0 2px 18px rgba(0,0,0,.6);
+  }
+  .rule {
+    position: absolute; left: 64px; bottom: 40px;
+    width: 84px; height: 2px; background: #d3a06a;
+  }
+  .stock {
+    position: absolute; right: 62px; bottom: 58px;
+    font-family: "Noto Sans", monospace;
+    font-size: 15px; font-weight: 400; letter-spacing: .34em;
+    color: #9aa3ac;
+  }
+  .edge { position: absolute; inset: 0; box-shadow: inset 0 0 0 1px rgba(255,255,255,.07); }
+</style>
+</head>
+<body>
+  <div class="stage"><div class="plate" id="plate"></div></div>
+  <div class="scrim"></div>
+  <div class="date">1992. 8. 12.</div>
+  <div class="rule"></div>
+  <div class="stock">TRI-X 400</div>
+  <div class="edge"></div>
+
+  <svg class="ph-defs" aria-hidden="true" style="position:absolute;width:0;height:0"><defs></defs></svg>
+
+<script src="../content/photos.js"></script>
+<script>
+  /* 4화 — 물가에 놓인 흰 샌들 */
+  document.getElementById('plate').innerHTML = window.PHOTOS[4].svg;
+</script>
+</body>
+</html>

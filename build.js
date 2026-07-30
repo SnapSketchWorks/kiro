@@ -59,4 +59,6 @@ console.log('분량  : 공백 제외 ' + stats.noSpace.toLocaleString('ko-KR') +
             stats.withSpace.toLocaleString('ko-KR') + '자');
 console.log('환산  : 200자 원고지 약 ' + Math.round(stats.withSpace / 200) + '매');
 console.log('        신국판 약 ' + Math.round(stats.withSpace / 420) + '쪽 분량');
-console.log('읽기  : 약 ' + (stats.noSpace / 700 / 60).toFixed(1) + '시간');
+/* 한국어 문학 산문 기준. 공백 포함 분당 480자 */
+const mins = Math.round(stats.withSpace / 480);
+console.log('읽기  : 약 ' + Math.floor(mins / 60) + '시간 ' + (mins % 60) + '분 (분당 480자 기준)');
