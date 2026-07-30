@@ -50,10 +50,6 @@ html[data-theme="light"] {
   --accent-soft: rgba(138, 90, 43, .1);
   --shadow: 0 8px 30px rgba(31, 28, 22, .12);
   --glass: rgba(247, 245, 241, .86);
-  /* 도판 팔레트 */
-  --ph-film: #d5d0c6; --ph-hole: #f8f6f1;
-  --ph-sky: #efece5; --ph-mid: #c5c0b5; --ph-dk: #2e2c28;
-  --ph-hi: #ffffff; --ph-line: #918a7f; --ph-warm: #b1522f; --ph-ink: #2e2c28;
 }
 html[data-theme="sepia"] {
   --bg: #f2e7d3;
@@ -68,9 +64,6 @@ html[data-theme="sepia"] {
   --accent-soft: rgba(154, 91, 30, .12);
   --shadow: 0 8px 30px rgba(80, 60, 25, .16);
   --glass: rgba(242, 231, 211, .88);
-  --ph-film: #d2bf99; --ph-hole: #f6eeda;
-  --ph-sky: #f0e4c9; --ph-mid: #cdba95; --ph-dk: #382c1c;
-  --ph-hi: #fffaf0; --ph-line: #9e8860; --ph-warm: #a8552a; --ph-ink: #382c1c;
 }
 html[data-theme="dark"] {
   --bg: #14161a;
@@ -85,9 +78,6 @@ html[data-theme="dark"] {
   --accent-soft: rgba(211, 160, 106, .13);
   --shadow: 0 10px 34px rgba(0, 0, 0, .5);
   --glass: rgba(20, 22, 26, .84);
-  --ph-film: #08090b; --ph-hole: #17191e;
-  --ph-sky: #3b434e; --ph-mid: #232a33; --ph-dk: #090a0d;
-  --ph-hi: #e3e7ec; --ph-line: #5a646f; --ph-warm: #b25a42; --ph-ink: #e3e7ec;
 }
 
 * { box-sizing: border-box; }
@@ -467,19 +457,25 @@ html[data-theme="dark"] .btn--primary:hover { color: #17191d; }
   margin: 30px auto 0;
 }
 
-/* ---------- 도판 (각 화의 사진) ---------- */
+/* ---------- 도판 (각 화의 사진) ----------
+   사진은 고정 계조로 그린다. 실제 사진집처럼 UI 테마에 따라
+   색이 변하지 않아야 한다. 테마 보정은 아래 filter 로만 한다. */
 .ph-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
 
 .plate { margin: 0 0 46px; }
 .plate__frame {
   border-radius: 3px;
   overflow: hidden;
-  box-shadow: 0 6px 22px rgba(0, 0, 0, .28);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, .42);
+  transition: filter var(--dur) ease;
 }
-html[data-theme="light"] .plate__frame,
-html[data-theme="sepia"] .plate__frame { box-shadow: 0 4px 16px rgba(60, 50, 30, .18); }
 /* 도판은 각 도형이 fill/stroke 를 스스로 지정한다. 상속 차단. */
 .plate__frame svg { display: block; width: 100%; height: auto; stroke: none; }
+
+html[data-theme="dark"]  .plate__frame { filter: contrast(1.03); }
+html[data-theme="light"] .plate__frame { filter: brightness(1.04) contrast(.99); box-shadow: 0 6px 20px rgba(60, 50, 30, .22); }
+html[data-theme="sepia"] .plate__frame { filter: sepia(.42) brightness(1.05) contrast(.99); box-shadow: 0 6px 20px rgba(80, 60, 25, .26); }
+
 .plate__cap {
   margin: 12px 2px 0;
   font-family: var(--sans);

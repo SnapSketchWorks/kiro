@@ -12,15 +12,60 @@
 <pre id="out" style="color:#5f5;background:#000;font-size:12px;padding:8px"></pre>
 
 <svg class="ph-defs" aria-hidden="true" focusable="false"><defs>
-  <filter id="ph-grain" x="0" y="0" width="100%" height="100%">
-    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch"/>
+  <!-- 미세한 필름 그레인 -->
+  <filter id="f-grain" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="7" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+    <feComponentTransfer><feFuncA type="linear" slope="0.42" intercept="0"/></feComponentTransfer>
+  </filter>
+  <!-- 굵은 입자 (미현상 / 고감도 표현) -->
+  <filter id="f-grain-coarse" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.45" numOctaves="3" seed="19" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+    <feComponentTransfer><feFuncA type="linear" slope="0.5" intercept="0"/></feComponentTransfer>
+  </filter>
+
+  <!-- 흐림: 대기 원근 · 피사계심도 · 블룸 -->
+  <filter id="f-b2" x="-15%" y="-15%" width="130%" height="130%"><feGaussianBlur stdDeviation="2"/></filter>
+  <filter id="f-b5" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5"/></filter>
+  <filter id="f-b10" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur stdDeviation="10"/></filter>
+  <filter id="f-b22" x="-35%" y="-35%" width="170%" height="170%"><feGaussianBlur stdDeviation="22"/></filter>
+
+  <!-- 수면: 난류로 반사를 일그러뜨린다 -->
+  <filter id="f-ripple" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.006 0.075" numOctaves="3" seed="3" result="t"/>
+    <feDisplacementMap in="SourceGraphic" in2="t" scale="26" xChannelSelector="R" yChannelSelector="G"/>
+    <feGaussianBlur stdDeviation="0.7"/>
+  </filter>
+  <filter id="f-ripple-soft" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.01 0.05" numOctaves="2" seed="9" result="t"/>
+    <feDisplacementMap in="SourceGraphic" in2="t" scale="14" xChannelSelector="R" yChannelSelector="G"/>
+    <feGaussianBlur stdDeviation="1.4"/>
+  </filter>
+
+  <filter id="f-ripple-tiny" x="-6%" y="-6%" width="112%" height="112%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.014 0.06" numOctaves="2" seed="4" result="t"/>
+    <feDisplacementMap in="SourceGraphic" in2="t" scale="6" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <!-- 안개 / 구름: 큰 스케일 난류를 흐려서 뭉갠다 -->
+  <filter id="f-fog" x="-20%" y="-20%" width="140%" height="140%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.016" numOctaves="3" seed="11" result="t"/>
+    <feColorMatrix in="t" type="matrix"
+      values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -1.1 0.92"/>
+    <feGaussianBlur stdDeviation="11"/>
+  </filter>
+  <!-- 나무결 -->
+  <filter id="f-wood" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.003 0.16" numOctaves="4" seed="5" stitchTiles="stitch"/>
     <feColorMatrix type="saturate" values="0"/>
     <feComponentTransfer><feFuncA type="linear" slope="0.34" intercept="0"/></feComponentTransfer>
   </filter>
-  <radialGradient id="ph-vig" cx="50%" cy="48%" r="72%">
-    <stop offset="55%" stop-color="#000" stop-opacity="0"/>
-    <stop offset="100%" stop-color="#000" stop-opacity="0.28"/>
-  </radialGradient>
+  <!-- 거친 표면(콘크리트 / 흙) -->
+  <filter id="f-rough" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="4" seed="23" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+    <feComponentTransfer><feFuncA type="linear" slope="0.4" intercept="0"/></feComponentTransfer>
+  </filter>
 </defs></svg>
 
 <script src="../content/photos.js"></script>
@@ -56,15 +101,19 @@
   var w = svg ? Math.round(svg.getBoundingClientRect().width) : 0;
   ck('도판 폭이 본문 폭을 채움 (>400px)', w > 400, w + 'px');
 
-  /* 4. 테마별 팔레트가 해석되는가 */
+  /* 4. 사진이 테마 변수에 의존하지 않는가 (사진집처럼 고정 계조여야 한다) */
+  ck('도판 SVG 에 CSS 변수 의존 없음', window.PHOTOS[4].svg.indexOf('var(') === -1,
+    'var() 사용 발견');
+
+  /* 5. 테마 보정이 filter 로 적용되는가 */
   ['light', 'sepia', 'dark'].forEach(function (t) {
     document.documentElement.setAttribute('data-theme', t);
-    var v = getComputedStyle(document.documentElement).getPropertyValue('--ph-film').trim();
-    ck('팔레트 해석: ' + t, /^#[0-9a-f]{6}$/i.test(v), v || '없음');
+    var f = getComputedStyle(document.querySelector('.plate__frame')).filter;
+    ck('테마 보정 filter: ' + t, !!f && f !== 'none', f);
   });
   document.documentElement.setAttribute('data-theme', 'dark');
 
-  /* 5. 사진 숨기기 설정이 실제로 숨기는가 */
+  /* 6. 사진 숨기기 설정이 실제로 숨기는가 */
   document.documentElement.setAttribute('data-photo', 'off');
   ck('사진 숨기기가 실제로 적용됨',
     getComputedStyle(document.querySelector('.plate')).display === 'none');

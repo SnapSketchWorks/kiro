@@ -297,15 +297,30 @@ for (let no = 1; no <= 25; no++) {
 }
 check('SVG 태그 정합성 · 캡션 · 값 오류', phBad.length === 0, phBad.slice(0, 4).join(' / '));
 
-/* 참조하는 필터 id가 index.html 에 정의돼 있는지 */
+/* 참조 정의 확인
+   - f-* : 공용 필터. index.html 의 ph-defs 에 있어야 한다
+   - 그 외 : 각 도판이 자기 <defs> 안에 직접 정의해야 한다 (테마 전환 안전) */
 const shell = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-const usedIds = new Set();
-Object.values(PH).forEach((p) => {
-  (p.svg.match(/url\(#([\w-]+)\)/g) || []).forEach((u) => usedIds.add(u.slice(5, -1)));
+const sharedMissing = new Set();
+const localMissing = [];
+const sharedUsed = new Set();
+
+Object.keys(PH).forEach((no) => {
+  const svg = PH[no].svg;
+  const used = (svg.match(/url\(#([\w-]+)\)/g) || []).map((u) => u.slice(5, -1));
+  used.forEach((id) => {
+    if (id.indexOf('f-') === 0) {
+      sharedUsed.add(id);
+      if (!shell.includes('id="' + id + '"')) sharedMissing.add(id);
+    } else if (!svg.includes('id="' + id + '"')) {
+      localMissing.push(no + '화:' + id);
+    }
+  });
 });
-const missingDefs = [...usedIds].filter((id) => !shell.includes('id="' + id + '"'));
-check('참조 필터/그라디언트 정의됨 (' + [...usedIds].join(', ') + ')',
-  missingDefs.length === 0, '누락: ' + missingDefs.join(','));
+check('공용 필터가 index.html 에 정의됨 (' + [...sharedUsed].sort().join(', ') + ')',
+  sharedMissing.size === 0, '누락: ' + [...sharedMissing].join(','));
+check('도판별 그라디언트가 각 SVG 안에 정의됨',
+  localMissing.length === 0, localMissing.slice(0, 5).join(', '));
 
 /* 실제 렌더링에 삽입되는지 (1화 다시 렌더) */
 nodes.btnStart.click();
