@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>없는 페이지 — 미현상</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    margin: 0; min-height: 100vh;
+    display: grid; place-items: center;
+    padding: 32px;
+    background: #14161a; color: #cdd2d8;
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    text-align: center;
+  }
+  @media (prefers-color-scheme: light) {
+    body { background: #f7f5f1; color: #1d2126; }
+  }
+  .box { max-width: 26rem; }
+  .frame {
+    width: 62px; height: 62px; margin: 0 auto 28px;
+    border: 1.5px solid #d3a06a;
+  }
+  h1 { margin: 0 0 14px; font-size: 20px; font-weight: 500; letter-spacing: .02em; }
+  p { margin: 0 0 28px; font-size: 14px; line-height: 1.9; opacity: .72; }
+  a {
+    display: inline-block; padding: 11px 22px;
+    border: 1px solid #d3a06a; border-radius: 999px;
+    color: #d3a06a; text-decoration: none;
+    font-size: 13.5px; font-weight: 600;
+  }
+  a:hover { background: #d3a06a; color: #14161a; }
+  small { display: block; margin-top: 30px; font-size: 11.5px; opacity: .45; letter-spacing: .04em; }
+</style>
+</head>
+<body>
+  <div class="box">
+    <div class="frame" aria-hidden="true"></div>
+    <h1>아직 현상되지 않은 페이지입니다</h1>
+    <p>주소가 잘못되었거나, 옮겨졌거나, 처음부터 없었습니다.<br>본문으로 돌아가시겠습니까.</p>
+    <a href="/kiro/">미현상 처음으로</a>
+    <small>404 · 未現像</small>
+  </div>
+</body>
+</html>
