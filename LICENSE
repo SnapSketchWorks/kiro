@@ -1,0 +1,48 @@
+이 저장소는 두 가지 성격의 결과물을 함께 담고 있어, 각각 다른 조건을 적용합니다.
+
+
+## 1. 소설 본문 — 저작권 보유 (All rights reserved)
+
+대상: `content/part1.js`, `content/part2.js`, `content/part3.js`, `content/part4.js`,
+`content/00-meta.js` 에 담긴 장편소설 『미현상(未現像)』의 본문과 제목, 그리고
+`dist/` 의 빌드 결과물에 포함된 같은 본문.
+
+저작권자의 서면 허락 없이 복제, 배포, 전송, 전시, 공연, 번역, 각색,
+2차적 저작물 작성, 상업적 이용을 할 수 없습니다.
+
+개인이 읽기 위해 내려받아 보관하는 것, 그리고 비평·연구·보도 목적의
+정당한 범위의 인용(출처 표시)은 저작권법이 허용하는 범위에서 자유롭습니다.
+
+등장하는 인물, 지명, 단체, 사건은 모두 허구입니다.
+
+
+## 2. 리더 소프트웨어 — MIT License
+
+대상: `index.html`, `404.html`, `assets/`, `content/photos.js`, `build.js`,
+`tools/`, `test/` 의 코드와 스타일. 즉 본문을 제외한 전부.
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+---
+
+리더만 가져다 다른 글을 넣어 쓰시는 것은 환영합니다.
+본문 이용에 대한 문의는 저장소 이슈로 남겨 주세요.

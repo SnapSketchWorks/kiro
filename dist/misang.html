@@ -73,7 +73,7 @@ html[data-theme="light"] {
   --bg-sunken: #efece5;
   --fg: #1d2126;
   --fg-soft: #4a5158;
-  --fg-dim: #7b838c;
+  --fg-dim: #69717a;
   --line: #ddd8cf;
   --line-soft: #e8e4dc;
   --accent: #8a5a2b;
@@ -87,10 +87,10 @@ html[data-theme="sepia"] {
   --bg-sunken: #e9dcc4;
   --fg: #33291c;
   --fg-soft: #59492f;
-  --fg-dim: #8a7752;
+  --fg-dim: #796641;
   --line: #d9c8a6;
   --line-soft: #e3d5b8;
-  --accent: #9a5b1e;
+  --accent: #95561a;
   --accent-soft: rgba(154, 91, 30, .12);
   --shadow: 0 8px 30px rgba(80, 60, 25, .16);
   --glass: rgba(242, 231, 211, .88);
@@ -101,7 +101,7 @@ html[data-theme="dark"] {
   --bg-sunken: #101216;
   --fg: #cdd2d8;
   --fg-soft: #a3abb4;
-  --fg-dim: #6e7783;
+  --fg-dim: #77808c;
   --line: #2b3038;
   --line-soft: #22262d;
   --accent: #d3a06a;
@@ -224,10 +224,18 @@ html:not([data-theme="dark"]) .ic-sun { display: none; }
   border-right: 1px solid var(--line);
   box-shadow: var(--shadow);
   transform: translateX(-102%);
-  transition: transform .28s cubic-bezier(.32, .72, 0, 1);
   padding-top: env(safe-area-inset-top);
+  /* 닫혀 있을 때 화면 밖에 있어도 포커스가 들어가면 안 된다.
+     visibility:hidden 은 하위 요소를 탭 순서에서 제외한다.
+     열 때는 즉시 보이게 하고, 닫을 때는 슬라이드가 끝난 뒤 숨긴다. */
+  visibility: hidden;
+  transition: transform .28s cubic-bezier(.32, .72, 0, 1), visibility 0s linear .28s;
 }
-.toc.is-open { transform: translateX(0); }
+.toc.is-open {
+  transform: translateX(0);
+  visibility: visible;
+  transition: transform .28s cubic-bezier(.32, .72, 0, 1), visibility 0s linear 0s;
+}
 
 .toc__head {
   display: flex; align-items: center; justify-content: space-between;
@@ -4188,7 +4196,7 @@ NOVEL.addChapter({
 >
 > 저는 이 문장을 열두 번 읽었습니다. 그리고 귀하가 이 문장을 쓰기 위해 무엇을 지웠는지 알게 되었습니다.
 >
-> 1992년 8월 12일 수내 저수지에서 물에 들어간 사람은 저희 아버지입니다. 그날 저희 아버지는 스물아홉이었고, 물을 무서워하는 사람이었으며, 오른쪽 무릎에 평생 남은 흉터를 그날 얻었습니다. 저는 그 흉터를 어릴 때부터 봤고 그 이야기를 스무 살에 들었습니다.
+> 1992년 8월 12일 수내 저수지에서 물에 들어간 사람은 저희 아버지입니다. 그날 저희 아버지는 서른일곱이었고, 물을 무서워하는 사람이었으며, 오른쪽 무릎에 평생 남은 흉터를 그날 얻었습니다. 저는 그 흉터를 어릴 때부터 봤고 그 이야기를 스무 살에 들었습니다.
 >
 > 귀하의 책에는 저희 아버지가 없습니다. 한 줄도 없습니다.
 >
@@ -4267,7 +4275,7 @@ NOVEL.addChapter({
 
 그는 담배를 두 번 빨았다.
 
-"1992년 8월 12일. 아침에 아버지가 저수지 쪽으로 자전거 타고 갔어요. 철물점 자리 알아보러 읍내 가는 길이었대요. 그때 아버지 스물아홉, 사진관 그만두고 십 년 됐고, 결혼해서 나 낳고 열한 살 되던 해요. 근데 저수지 둑에 사람이 서 있었어요. 카메라 들고."
+"1992년 8월 12일. 아침에 아버지가 저수지 쪽으로 자전거 타고 갔어요. 철물점 자리 알아보러 읍내 가는 길이었대요. 그때 아버지 서른일곱, 사진관 그만두고 십일 년 됐고, 결혼해서 나 낳고 열한 살 되던 해요. 근데 저수지 둑에 사람이 서 있었어요. 카메라 들고."
 
 "…아버지요."
 
@@ -7284,7 +7292,7 @@ NOVEL.addChapter({
 
 ---
 
-**서다인, 2033년 겨울**
+**서다인, 2032년 겨울**
 `
 });
 </script>
@@ -7590,7 +7598,10 @@ NOVEL.addChapter({
   });
 
   /* ---------------- 오버레이 ---------------- */
+  var lastFocus = null;
+
   function openToc() {
+    lastFocus = document.activeElement;
     el.scrim.hidden = false;
     requestAnimationFrame(function () { el.scrim.classList.add('is-open'); });
     el.toc.classList.add('is-open');
@@ -7599,6 +7610,8 @@ NOVEL.addChapter({
     el.body.classList.add('is-locked');
     var cur = el.tocList.querySelector('.is-current');
     if (cur) cur.scrollIntoView({ block: 'center' });
+    /* 키보드 사용자가 바로 목차를 조작할 수 있게 */
+    setTimeout(function () { if (el.tocSearch) el.tocSearch.focus(); }, 60);
   }
   function closeToc() {
     el.toc.classList.remove('is-open');
@@ -7606,6 +7619,8 @@ NOVEL.addChapter({
     el.btnToc.setAttribute('aria-expanded', 'false');
     el.body.classList.remove('is-locked');
     hideScrim();
+    if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} }
+    lastFocus = null;
   }
   function openSheet() {
     el.sheet.hidden = false;
@@ -7708,7 +7723,9 @@ NOVEL.addChapter({
   }
 
   function showCover() {
+    savePos();
     current = -1;
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
     if (el.info) el.info.hidden = true;
     el.reader.hidden = true;
     el.pager.hidden = true;
@@ -7791,6 +7808,11 @@ NOVEL.addChapter({
   }
 
   function showInfo() {
+    /* 읽던 위치를 먼저 저장한 뒤 current 를 해제한다.
+       해제하지 않으면 작품 정보 페이지의 스크롤 비율이
+       읽던 화의 위치로 덮어써진다. */
+    savePos();
+    current = -1;
     el.info.innerHTML = infoHtml();
     el.cover.hidden = true;
     el.reader.hidden = true;
@@ -7798,6 +7820,8 @@ NOVEL.addChapter({
     el.info.hidden = false;
     el.topbarChap.textContent = '작품 정보';
     el.topbar.classList.remove('is-hidden');
+    document.title = '작품 정보 — 미현상';
+    if (location.hash !== '#info') history.replaceState(null, '', '#info');
     window.scrollTo(0, 0);
   }
 
@@ -7822,7 +7846,7 @@ NOVEL.addChapter({
     var max = document.documentElement.scrollHeight - window.innerHeight;
     var ratio = max > 0 ? window.scrollY / max : 0;
 
-    if (current >= 0) {
+    if (current >= 0 && !el.reader.hidden) {
       var overall = (current + Math.min(1, Math.max(0, ratio))) / chapters.length;
       el.progressBar.style.width = (overall * 100).toFixed(2) + '%';
     } else {
@@ -7856,6 +7880,10 @@ NOVEL.addChapter({
       case 'ArrowLeft':
         if (current > 0) { go(current - 1); e.preventDefault(); } break;
       case 'Escape':
+        if (el.info && !el.info.hidden &&
+            !el.toc.classList.contains('is-open') && !el.sheet.classList.contains('is-open')) {
+          showCover();
+        }
         closeToc(); closeSheet(); break;
       case 't': case 'T':
         el.toc.classList.contains('is-open') ? closeToc() : openToc(); break;
@@ -7899,6 +7927,9 @@ NOVEL.addChapter({
     }
   }
 
+  if ((location.hash || '') === '#info') {
+    showInfo();
+  }
   var hashNo = parseInt((location.hash || '').replace('#', ''), 10);
   if (hashNo) {
     var hi = -1;
@@ -7907,6 +7938,7 @@ NOVEL.addChapter({
   }
 
   window.addEventListener('hashchange', function () {
+    if ((location.hash || '') === '#info') { showInfo(); return; }
     var n = parseInt((location.hash || '').replace('#', ''), 10);
     if (!n) return;
     var i = -1;

@@ -93,7 +93,7 @@
 ```bash
 node build.js              # dist/ 에 단일 파일 생성 + 분량 통계 출력
 node test/harness.js       # 로직 검증 — 최소 DOM 스텁 (70개 항목)
-node test/render-check.js  # 렌더 검증 — 헤드리스 브라우저로 실제 계산된 스타일 확인 (10개 항목)
+node test/render-check.js  # 렌더 검증 — 헤드리스 브라우저로 실제 계산된 스타일 확인 (24개 항목)
 ```
 
 공유 카드 이미지는 다음으로 다시 만듭니다.
@@ -110,6 +110,8 @@ node tools/make-og.js      # tools/og-card.html 을 1200x630 PNG 로 렌더
 - 도판 SVG 가 UI 아이콘용 `stroke`/`fill` 을 상속받지 않는지
 - 도판이 본문 폭까지 커지는지
 - 사진이 테마 변수에 의존하지 않고, 테마 보정이 filter 로 적용되는지
+- 모든 글자 색이 WCAG AA 명암비(4.5:1)를 만족하는지
+- 닫힌 목차가 탭 순서에서 제외되는지 (화면 밖에 있어도 포커스가 들어가면 안 된다)
 
 도판을 눈으로 확인할 때는 컨택트시트를 씁니다.
 
@@ -138,4 +140,9 @@ node test/contact-sheet.js light out.html only:4,11 # 특정 화만 크게
 
 ## 저작
 
-소설 본문은 창작물이며 등장하는 인물·지명·단체는 모두 허구입니다.
+- **소설 본문** (`content/part1~4.js`, `dist/` 의 본문): 저작권 보유. 무단 복제·배포·2차 창작을 허용하지 않습니다.
+- **리더 코드** (`index.html`, `assets/`, `content/photos.js`, `build.js`, `tools/`, `test/`): MIT.
+
+리더만 가져다 다른 글을 넣어 쓰시는 것은 환영합니다. 자세한 조건은 [LICENSE](LICENSE)에 있습니다.
+
+등장하는 인물·지명·단체·사건은 모두 허구입니다.

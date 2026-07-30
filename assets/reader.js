@@ -299,7 +299,10 @@
   });
 
   /* ---------------- 오버레이 ---------------- */
+  var lastFocus = null;
+
   function openToc() {
+    lastFocus = document.activeElement;
     el.scrim.hidden = false;
     requestAnimationFrame(function () { el.scrim.classList.add('is-open'); });
     el.toc.classList.add('is-open');
@@ -308,6 +311,8 @@
     el.body.classList.add('is-locked');
     var cur = el.tocList.querySelector('.is-current');
     if (cur) cur.scrollIntoView({ block: 'center' });
+    /* 키보드 사용자가 바로 목차를 조작할 수 있게 */
+    setTimeout(function () { if (el.tocSearch) el.tocSearch.focus(); }, 60);
   }
   function closeToc() {
     el.toc.classList.remove('is-open');
@@ -315,6 +320,8 @@
     el.btnToc.setAttribute('aria-expanded', 'false');
     el.body.classList.remove('is-locked');
     hideScrim();
+    if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} }
+    lastFocus = null;
   }
   function openSheet() {
     el.sheet.hidden = false;
@@ -417,7 +424,9 @@
   }
 
   function showCover() {
+    savePos();
     current = -1;
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
     if (el.info) el.info.hidden = true;
     el.reader.hidden = true;
     el.pager.hidden = true;
@@ -500,6 +509,11 @@
   }
 
   function showInfo() {
+    /* 읽던 위치를 먼저 저장한 뒤 current 를 해제한다.
+       해제하지 않으면 작품 정보 페이지의 스크롤 비율이
+       읽던 화의 위치로 덮어써진다. */
+    savePos();
+    current = -1;
     el.info.innerHTML = infoHtml();
     el.cover.hidden = true;
     el.reader.hidden = true;
@@ -533,7 +547,7 @@
     var max = document.documentElement.scrollHeight - window.innerHeight;
     var ratio = max > 0 ? window.scrollY / max : 0;
 
-    if (current >= 0) {
+    if (current >= 0 && !el.reader.hidden) {
       var overall = (current + Math.min(1, Math.max(0, ratio))) / chapters.length;
       el.progressBar.style.width = (overall * 100).toFixed(2) + '%';
     } else {
@@ -567,6 +581,10 @@
       case 'ArrowLeft':
         if (current > 0) { go(current - 1); e.preventDefault(); } break;
       case 'Escape':
+        if (el.info && !el.info.hidden &&
+            !el.toc.classList.contains('is-open') && !el.sheet.classList.contains('is-open')) {
+          showCover();
+        }
         closeToc(); closeSheet(); break;
       case 't': case 'T':
         el.toc.classList.contains('is-open') ? closeToc() : openToc(); break;

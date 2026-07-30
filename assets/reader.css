@@ -43,7 +43,7 @@ html[data-theme="light"] {
   --bg-sunken: #efece5;
   --fg: #1d2126;
   --fg-soft: #4a5158;
-  --fg-dim: #7b838c;
+  --fg-dim: #69717a;
   --line: #ddd8cf;
   --line-soft: #e8e4dc;
   --accent: #8a5a2b;
@@ -57,10 +57,10 @@ html[data-theme="sepia"] {
   --bg-sunken: #e9dcc4;
   --fg: #33291c;
   --fg-soft: #59492f;
-  --fg-dim: #8a7752;
+  --fg-dim: #796641;
   --line: #d9c8a6;
   --line-soft: #e3d5b8;
-  --accent: #9a5b1e;
+  --accent: #95561a;
   --accent-soft: rgba(154, 91, 30, .12);
   --shadow: 0 8px 30px rgba(80, 60, 25, .16);
   --glass: rgba(242, 231, 211, .88);
@@ -71,7 +71,7 @@ html[data-theme="dark"] {
   --bg-sunken: #101216;
   --fg: #cdd2d8;
   --fg-soft: #a3abb4;
-  --fg-dim: #6e7783;
+  --fg-dim: #77808c;
   --line: #2b3038;
   --line-soft: #22262d;
   --accent: #d3a06a;
@@ -194,10 +194,18 @@ html:not([data-theme="dark"]) .ic-sun { display: none; }
   border-right: 1px solid var(--line);
   box-shadow: var(--shadow);
   transform: translateX(-102%);
-  transition: transform .28s cubic-bezier(.32, .72, 0, 1);
   padding-top: env(safe-area-inset-top);
+  /* 닫혀 있을 때 화면 밖에 있어도 포커스가 들어가면 안 된다.
+     visibility:hidden 은 하위 요소를 탭 순서에서 제외한다.
+     열 때는 즉시 보이게 하고, 닫을 때는 슬라이드가 끝난 뒤 숨긴다. */
+  visibility: hidden;
+  transition: transform .28s cubic-bezier(.32, .72, 0, 1), visibility 0s linear .28s;
 }
-.toc.is-open { transform: translateX(0); }
+.toc.is-open {
+  transform: translateX(0);
+  visibility: visible;
+  transition: transform .28s cubic-bezier(.32, .72, 0, 1), visibility 0s linear 0s;
+}
 
 .toc__head {
   display: flex; align-items: center; justify-content: space-between;
