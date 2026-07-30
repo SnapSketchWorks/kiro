@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#14161a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f5f1" media="(prefers-color-scheme: light)">
+<meta name="description" content="장편소설 미현상(未現像) — 아버지의 서른세 번째 여름. 사진과 AI, 그리고 한 남자가 쓴 이야기.">
+<title>미현상(未現像) — 아버지의 서른세 번째 여름</title>
+<link rel="stylesheet" href="assets/reader.css">
+<script>
+  /* 콘텐츠 등록용 전역 객체 (본문 스크립트보다 먼저 정의되어야 함) */
+  window.NOVEL = {
+    meta: null,
+    volumes: [],
+    parts: [],
+    chapters: [],
+    setMeta: function (m) { this.meta = m; },
+    addVolume: function (v) { this.volumes.push(v); },
+    addPart: function (p) { this.parts.push(p); },
+    addChapter: function (c) { this.chapters.push(c); }
+  };
+  /* 테마 깜빡임 방지: 저장된 설정을 렌더 전에 적용 */
+  (function () {
+    try {
+      var s = JSON.parse(localStorage.getItem('misang.settings') || '{}');
+      var t = s.theme || 'auto';
+      var resolved = t === 'auto'
+        ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
+        : t;
+      var r = document.documentElement;
+      r.setAttribute('data-theme', resolved);
+      if (s.font) r.setAttribute('data-font', s.font);
+      if (s.size) r.setAttribute('data-size', s.size);
+      if (s.leading) r.setAttribute('data-leading', s.leading);
+      if (s.width) r.setAttribute('data-width', s.width);
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+
+<div class="progress" aria-hidden="true"><div class="progress__bar" id="progressBar"></div></div>
+
+<header class="topbar" id="topbar">
+  <button class="iconbtn" id="btnToc" aria-label="목차 열기" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h11"/></svg>
+  </button>
+
+  <div class="topbar__title" id="topbarTitle">
+    <span class="topbar__book">미현상</span>
+    <span class="topbar__sep">·</span>
+    <span class="topbar__chap" id="topbarChap">불러오는 중</span>
+  </div>
+
+  <div class="topbar__right">
+    <button class="iconbtn" id="btnTheme" aria-label="테마 전환">
+      <svg viewBox="0 0 24 24" aria-hidden="true" class="ic-moon"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true" class="ic-sun"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/></svg>
+    </button>
+    <button class="iconbtn" id="btnSettings" aria-label="읽기 설정" aria-expanded="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 12h4M12 12h8M4 17h9M17 17h3"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="15" cy="17" r="2"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- 목차 -->
+<div class="scrim" id="scrim" hidden></div>
+<nav class="toc" id="toc" aria-label="목차" aria-hidden="true">
+  <div class="toc__head">
+    <div class="toc__book">
+      <strong>미현상</strong>
+      <span>未現像</span>
+    </div>
+    <button class="iconbtn" id="btnTocClose" aria-label="목차 닫기">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="toc__search">
+    <input type="search" id="tocSearch" placeholder="화 제목 검색" autocomplete="off" aria-label="화 제목 검색">
+  </div>
+  <div class="toc__stats" id="tocStats"></div>
+  <div class="toc__list" id="tocList"></div>
+</nav>
+
+<!-- 설정 -->
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet__inner">
+    <div class="sheet__grip" aria-hidden="true"></div>
+
+    <div class="field">
+      <div class="field__label">테마</div>
+      <div class="seg" id="setTheme" role="group">
+        <button data-v="auto">시스템</button>
+        <button data-v="light">라이트</button>
+        <button data-v="sepia">세피아</button>
+        <button data-v="dark">다크</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field__label">글꼴</div>
+      <div class="seg" id="setFont" role="group">
+        <button data-v="serif">명조</button>
+        <button data-v="sans">고딕</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field__label">글자 크기</div>
+      <div class="seg" id="setSize" role="group">
+        <button data-v="1">가</button>
+        <button data-v="2">가</button>
+        <button data-v="3">가</button>
+        <button data-v="4">가</button>
+        <button data-v="5">가</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field__label">줄 간격</div>
+      <div class="seg" id="setLeading" role="group">
+        <button data-v="tight">좁게</button>
+        <button data-v="normal">보통</button>
+        <button data-v="loose">넓게</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field__label">본문 폭</div>
+      <div class="seg" id="setWidth" role="group">
+        <button data-v="narrow">좁게</button>
+        <button data-v="normal">보통</button>
+        <button data-v="wide">넓게</button>
+      </div>
+    </div>
+
+    <div class="sheet__foot">
+      <span class="kbd-hint">← → 화 이동 · <b>T</b> 목차 · <b>D</b> 테마</span>
+      <button class="textbtn" id="btnReset">설정 초기화</button>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+  <!-- 표지 / 이어서 읽기 -->
+  <section class="cover" id="cover">
+    <div class="cover__inner">
+      <p class="cover__kicker">장편소설</p>
+      <h1 class="cover__title">미현상<span>未現像</span></h1>
+      <p class="cover__sub">아버지의 서른세 번째 여름</p>
+      <div class="cover__rule" aria-hidden="true"></div>
+      <p class="cover__blurb">
+        아버지가 남긴 것은 낡은 카메라와, 한 번도 빛을 본 적 없는 필름 서른일곱 롤이었다.<br>
+        마흔셋의 남자는 밤마다 그 필름을 현상하고, 죽은 아버지를 닮은 인공지능과 이야기를 나눈다.<br>
+        그 대화가 책이 되었을 때, 세상은 그것을 실화라고 믿었다.
+      </p>
+      <div class="cover__actions">
+        <button class="btn btn--primary" id="btnStart">처음부터 읽기</button>
+        <button class="btn" id="btnResume" hidden>이어서 읽기</button>
+      </div>
+      <p class="cover__meta" id="coverMeta"></p>
+    </div>
+  </section>
+
+  <article class="reader" id="reader" hidden></article>
+</main>
+
+<footer class="pager" id="pager" hidden>
+  <button class="pager__btn" id="btnPrev">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    <span>이전 화</span>
+  </button>
+  <button class="pager__btn pager__btn--mid" id="btnTop">위로</button>
+  <button class="pager__btn" id="btnNext">
+    <span>다음 화</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+  </button>
+</footer>
+
+<!-- 본문 콘텐츠 -->
+<script src="content/00-meta.js"></script>
+<script src="content/part1.js"></script>
+<script src="content/part2.js"></script>
+<script src="content/part3.js"></script>
+<script src="content/part4.js"></script>
+<script src="assets/reader.js"></script>
+</body>
+</html>
